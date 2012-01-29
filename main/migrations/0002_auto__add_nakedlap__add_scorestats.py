@@ -8,65 +8,35 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'UserProfile'
-        db.create_table('main_userprofile', (
+        # Adding model 'NakedLap'
+        db.create_table('main_nakedlap', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.OneToOneField')(blank=True, related_name='profile', unique=True, null=True, to=orm['auth.User'])),
-        ))
-        db.send_create_signal('main', ['UserProfile'])
-
-        # Adding model 'Team'
-        db.create_table('main_team', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length='63')),
-            ('player1', self.gf('django.db.models.fields.related.ForeignKey')(related_name='teams_player1', to=orm['auth.User'])),
-            ('player2', self.gf('django.db.models.fields.related.ForeignKey')(blank=True, related_name='teams_player2', null=True, to=orm['auth.User'])),
+            ('team', self.gf('django.db.models.fields.related.ForeignKey')(related_name='naked_laps', to=orm['main.Team'])),
+            ('game', self.gf('django.db.models.fields.related.OneToOneField')(related_name='naked_lap', unique=True, to=orm['main.Game'])),
             ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('is_reversed', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
-        db.send_create_signal('main', ['Team'])
+        db.send_create_signal('main', ['NakedLap'])
 
-        # Adding model 'Game'
-        db.create_table('main_game', (
+        # Adding model 'ScoreStats'
+        db.create_table('main_scorestats', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('in_progress', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('team1', self.gf('django.db.models.fields.related.ForeignKey')(related_name='games_team1', to=orm['main.Team'])),
-            ('team2', self.gf('django.db.models.fields.related.ForeignKey')(related_name='games_team2', to=orm['main.Team'])),
-            ('team1_score', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('team2_score', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('scoring_team', self.gf('django.db.models.fields.related.ForeignKey')(related_name='team_scores', to=orm['main.Team'])),
+            ('defender_team', self.gf('django.db.models.fields.related.ForeignKey')(related_name='team_scored_against', to=orm['main.Team'])),
+            ('game', self.gf('django.db.models.fields.related.ForeignKey')(related_name='score_stats', to=orm['main.Game'])),
             ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
-            ('last_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
-            ('score_limit', self.gf('django.db.models.fields.IntegerField')(default=10)),
-        ))
-        db.send_create_signal('main', ['Game'])
-
-        # Adding model 'Outcome'
-        db.create_table('main_outcome', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('game', self.gf('django.db.models.fields.related.OneToOneField')(related_name='outcome', unique=True, to=orm['main.Game'])),
-            ('winner', self.gf('django.db.models.fields.related.ForeignKey')(related_name='wins', to=orm['main.Team'])),
-            ('loser', self.gf('django.db.models.fields.related.ForeignKey')(related_name='losses', to=orm['main.Team'])),
-            ('winner_score', self.gf('django.db.models.fields.IntegerField')()),
-            ('loser_score', self.gf('django.db.models.fields.IntegerField')()),
             ('deleted', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('created', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
-        db.send_create_signal('main', ['Outcome'])
+        db.send_create_signal('main', ['ScoreStats'])
 
 
     def backwards(self, orm):
         
-        # Deleting model 'UserProfile'
-        db.delete_table('main_userprofile')
+        # Deleting model 'NakedLap'
+        db.delete_table('main_nakedlap')
 
-        # Deleting model 'Team'
-        db.delete_table('main_team')
-
-        # Deleting model 'Game'
-        db.delete_table('main_game')
-
-        # Deleting model 'Outcome'
-        db.delete_table('main_outcome')
+        # Deleting model 'ScoreStats'
+        db.delete_table('main_scorestats')
 
 
     models = {
@@ -119,6 +89,14 @@ class Migration(SchemaMigration):
             'team2': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'games_team2'", 'to': "orm['main.Team']"}),
             'team2_score': ('django.db.models.fields.IntegerField', [], {'default': '0'})
         },
+        'main.nakedlap': {
+            'Meta': {'object_name': 'NakedLap'},
+            'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'game': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'naked_lap'", 'unique': 'True', 'to': "orm['main.Game']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_reversed': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'team': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'naked_laps'", 'to': "orm['main.Team']"})
+        },
         'main.outcome': {
             'Meta': {'object_name': 'Outcome'},
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -129,6 +107,15 @@ class Migration(SchemaMigration):
             'loser_score': ('django.db.models.fields.IntegerField', [], {}),
             'winner': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'wins'", 'to': "orm['main.Team']"}),
             'winner_score': ('django.db.models.fields.IntegerField', [], {})
+        },
+        'main.scorestats': {
+            'Meta': {'object_name': 'ScoreStats'},
+            'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'defender_team': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'team_scored_against'", 'to': "orm['main.Team']"}),
+            'deleted': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'game': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'score_stats'", 'to': "orm['main.Game']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'scoring_team': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'team_scores'", 'to': "orm['main.Team']"})
         },
         'main.team': {
             'Meta': {'object_name': 'Team'},

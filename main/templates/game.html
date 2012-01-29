@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block body %}
+<div data-role="page" id="game">
+  <script type="text/javascript">
+    function update_game(data) {
+	   console.log(data);
+       $('#players_score').text(data['players_score']);
+       $('#opponents_score').text(data['opponents_score']);
+       if (data['players_score']===10) {
+	       $("#winner").text(data['players_team']);
+           win();
+       } else if (data['opponents_score'] === 10) {
+	       $("#winner").text(data['opponents_team']);
+           lose();
+       }
+    }
+  
+   function win() {
+       $('#game').removeClass('ui-page-active');
+       $('#win').addClass('ui-page-active');
+    }
+   function lose() {
+       $('#game').removeClass('ui-page-active');
+       $('#lose').addClass('ui-page-active');
+    }  
+	$('#game').live('pagecreate',function() {
+	   $('#score-button').click(function(event) {
+	      var game_id = $('#score-button').attr('gid');
+          $.ajax({'url':'/action/increment_score/',
+                  'type':'GET',
+                  'dataType':'json',
+                  'data':{'gid':game_id},
+                  'success' : update_game, 
+                  'error' : function() {alert('error')} //to fix
+                });
+       });
+	   $('#decrement-score-button').click(function(event) {
+	      var game_id = $('#decrement-score-button').attr('gid');
+          $.ajax({'url':'/action/decrement_score/',
+                  'type':'GET',
+                  'dataType':'json',
+                  'data':{'gid':game_id},
+                  'success' : update_game, 
+                  'error' : function() {alert('error')} //to fix
+                });
+	   });
+	   $('#refresh-score-button').click(function(event) {
+	      var game_id = $('#refresh-score-button').attr('gid');
+          $.ajax({'url':'/action/refresh_score/',
+                  'type':'GET',
+                  'dataType':'json',
+                  'data':{'gid':game_id},
+                  'success' : update_game, 
+                  'error' : function() {alert('error')} //to fix
+                });
+       });
+
+	});
+  </script>
+  <div data-role="header">
+<!-- 	<a href="/" data-role="button" data-icon="arrow-l">Back</a> -->
+	<h1>{{players_team}} vs. {{opponents_team}}</h1>
+  </div>
+  <div data-role="content">
+	<div class="ui-grid-a score-container">
+	  <div class="ui-block-a"><h3>Your Score</h3></div>
+	  <div class="ui-block-b"><span class="score" id="players_score">{{players_score}}</span></div>
+	</div>
+	<div class="ui-grid-a score-container">
+	  <div class="ui-block-a"><h3>Opponent's Score</h3></div>
+	  <div class="ui-block-b"><span class="score" id="opponents_score">{{opponents_score}}</span></div>
+	</div>
+	<button id="score-button" gid="{{gid}}" type="submit" data-theme="b">Score!</button>
+	<button id="decrement-score-button" gid="{{gid}}" type="submit" data-theme="d">-1</button>
+	<button id="refresh-score-button" gid="{{gid}}" type="submit" data_theme="d">Refresh Scores</button>
+  </div>
+  <div data-role="footer">
+	<h3>This is a footer</h3>
+  </div>
+</div>
+
+
+<div data-role="page" id="win">
+  <div data-role="header">
+	<h1><span id="winner"></span> wins!</h1>
+  </div>
+  <div data-role="content">
+	<h1>You won!</h1>
+	<p> <a data-role="button" href="/">Go back home</a></p>
+  </div>
+  <div data-role="footer">
+	<h3>this is a footer</h3>
+  </div>
+</div>
+
+<div data-role="page" id="lose">
+  <div data-role="header">
+	<h1><span id="winner"></span> wins!</h1>
+  </div>
+  <div data-role="content">
+	<h1>You lost!</h1>
+	<p> <a data-role="button" href="/">Go back home</a></p>
+  </div>
+  <div data-role="footer">
+	<h3>this is a footer</h3>
+  </div>
+</div>
+
+{% endblock %}

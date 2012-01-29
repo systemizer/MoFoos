@@ -1,0 +1,30 @@
+<div data-role="page" id="new_game">
+  <div data-role="header">
+	<h1>New Game</h1>
+  </div>
+  <div data-role="content">
+	<form action="/new_game/" method="POST">
+	  {% csrf_token %}
+	  <div data-role="fieldcontain">
+		<label for="team">Choose your team:</label>
+		<select name="tid" id="tid">
+		  {% for team in player_teams %}
+		  <option value="{{team.id}}">{{team.name}}</option>
+		  {% endfor %}
+		</select>
+	  </div>
+	  <div data-role="fieldcontain">
+		<label for="against">Choose your opponent:</label>
+		<select name="against" id="against">
+		  {% for team in opponent_teams %}
+		  <option value="{{team.id}}">{{team.name}}</option>
+		  {% endfor %}
+		</select>
+	  </div>
+      <input type="submit" data-theme="a" value="TIME TO FOOS" />
+	</form>
+  </div>
+  <div data-role="footer">
+	<h1>Footer</h1>
+  </div>
+</div>

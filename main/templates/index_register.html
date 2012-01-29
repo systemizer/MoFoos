@@ -1,0 +1,23 @@
+<div data-role="page" id="register">	  
+  <script type="text/javascript">
+	{% include "js/index_register.js" %}
+   </script>
+  <div data-role="header">
+	<h1>Register</h1>
+  </div>	  
+  <div data-role="content"> 
+	<form id="register-form" action="" data-ajax=false method="POST">
+	  {% csrf_token %}
+	  {% for field in register_form %}
+	  <div class="fieldcontain">
+		{{field.label_tag}}
+		{{field}}
+	  </div>
+	  {% endfor %}
+	  <input type="submit" data-role="button" value="Sign Up" />
+	</form>
+  </div>	  
+  <div data-role="footer">
+	<h1>Footer</h1>
+  </div>
+</div>
