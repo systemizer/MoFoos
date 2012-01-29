@@ -6,24 +6,21 @@
 
 
   <div data-role="header">
-	<a href="#about" data-role="button" data-icon="arrow-u">About</a>
-	<h1>Home</h1>
+	<h1>MOFOOS</h1>
   </div>	  
   <div data-role="content"> 
-	<p>This is where the content goes. 
-	  <a href="#about" data-role="button" data-transition="pop">about us</a>
-
+	<h3>The Official MoPub Foos tracking App<h3>
+		<a href="#about" data-role="button" data-transition="pop">about MOFOOS</a>
 	  {% if not user.is_authenticated %}
 	  <a href="#login" data-role="button" data-transition="pop">login</a>
 	  <a href="#register" data-role="button" data-transition="pop">register</a>
 	  {% else %}
+	  <a href="#make_team" data-role="button">make a new team</a>
 	  <a href="#new_game" data-role="button">new game</a>
-	  <a  id="logout-button"" data-role="button">logout</a>
-	  <a href="/play/?gid=1">Resume Game</a>
+	  <a  id="logout-button" data-role="button">logout</a>
 	  {% endif %}
-	</p>
   </div>	  
   <div data-role="footer">
-	<h1>Footer</h1>
+	{% include "default_footer.html" %}
   </div>
 </div>

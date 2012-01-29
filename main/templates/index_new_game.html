@@ -1,9 +1,12 @@
 <div data-role="page" id="new_game">
+  <script type="text/javascript">
+	{% include "js/index_new_game.js" %}
+  </script>
   <div data-role="header">
 	<h1>New Game</h1>
   </div>
   <div data-role="content">
-	<form action="/new_game/" method="POST">
+	<form id="new-game-form" action="/new_game/" data-ajax=false method="POST">
 	  {% csrf_token %}
 	  <div data-role="fieldcontain">
 		<label for="team">Choose your team:</label>
@@ -21,10 +24,10 @@
 		  {% endfor %}
 		</select>
 	  </div>
-      <input type="submit" data-theme="a" value="TIME TO FOOS" />
+      <button id="new-game-form-submit" data-role="button">TIME TO FOOS</button>
 	</form>
   </div>
   <div data-role="footer">
-	<h1>Footer</h1>
+	{% include "default_footer.html" %}
   </div>
 </div>

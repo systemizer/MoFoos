@@ -145,3 +145,4 @@ LOGGING = {
 }
 
 AUTH_PROFILE_MODULE = "main.UserProfile"
+

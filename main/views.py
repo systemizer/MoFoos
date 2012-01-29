@@ -2,7 +2,7 @@ import json
 
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -10,14 +10,16 @@ from django.contrib.auth import authenticate,login as auth_login
 from django.conf import settings
 
 from foos.main.models import *
-
+from foos.main.decorators import ajax_required
 
 def index(request):
     if request.user.is_authenticated():
         player_teams = Team.get_teams_by_user(request.user)        
+        players = User.objects.exclude(id=request.user.id)
     else:
         player_teams = []
-
+        players = []
+        
     opponent_teams = [t for t in Team.objects.all() if t not in player_teams]
 
     register_form = UserCreationForm()
@@ -26,6 +28,7 @@ def index(request):
     return render_to_response("index.html",
                               {'player_teams':player_teams,                               
                                'opponent_teams':opponent_teams,
+                               'players':players,
                                'register_form':register_form,
                                'login_form':login_form},
                               RequestContext(request))
@@ -46,11 +49,13 @@ def new_game(request):
                         score_limit=score_limit)
             game.save()
             game_context = game.get_context_for_user(request.user)
-            return render_to_response("game.html",game_context,RequestContext(request))
+            return HttpResponse(json.dumps(game_context))
         except ObjectDoesNotExist:
             return HttpResponseBadRequest("Failed to create game")
     else:
         raise Http404
+
+                        
 
 def play_game(request):
     gid = request.GET.get("gid")
@@ -70,35 +75,26 @@ def play_game(request):
 
 #TODO: Make these ajax only
 
-def resume_game(request):
-    gid = request.POST.get("gid")
-    tid = request.POST.get("tid")
-    if not gid or not tid:
-        return HttpResponseBadRequest("Missing gid or tid")
-    try:
-        game = Game.objects.get(id=gid)
-        team = Team.objects.get(id=tid)
-        if not (team == game.team1 or team == game.team2):
-            return HttpResponseBadRequest("Only teams playing this game can resume")
-        game.in_progress = True
-        game.save()
-        return HttpResponse("OK")
-    except ObjectDoesNotExist:
-        return HttpResponseBadRequest("Error: Invalid game or team id")
-
-def win_game(request):
-    gid = request.POST.get("gid")
-    tid = request.POST.get("tid")
-    if not gid or not tid:
-        return HttpResponseBadRequest("Missing gid or tid")
-    try:
-        team = Team.objects.get(id=tid)
-        game = Game.objects.get(id=gid)
-        if game.win_game(team):
+def make_team(request):
+    if request.method=="POST":
+        team_name = request.POST.get("team_name")
+        uid = request.POST.get("uid")
+        if not uid or not team_name:
+            return HttpResponseBadRequest("Bad uid or team name")
+        try:
+            player = User.objects.get(id=uid)
+            team = Team(name=team_name,
+                        player1 = request.user,
+                        player2 = player)
+            team.save()
             return HttpResponse("OK")
-        return HttpResponseBadRequest("Invalid Team(s) for game")
-    except ObjectDoesNotExist:
-        return HttpResponseBadRequest("Invalid team or game")                        
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest("User does not exist")
+        except ValidationError:
+            return HttpResponseBadRequest("Could not create team. Team might already exist")
+    else:
+        raise Http404
+
 
 def increment_score(request):
     gid = request.GET.get("gid")
@@ -192,6 +188,8 @@ def register(request):
     if form.is_valid():
         user = form.save()
         user = authenticate(username=user.username,password=request.POST.get("password1"))
+        profile = UserProfile(user=user)
+        profile.save()
         auth_login(request,user)
         if request.session.test_cookie_worked():
             request.session.delete_test_cookie()
@@ -199,3 +197,18 @@ def register(request):
     else:
         return HttpResponseBadRequest("Invalid username or password")
         
+def login(request):
+    if request.method == "POST":
+        form = AuthenticationForm(data=request.POST)
+        if form.is_valid():
+            # Okay, security checks complete. Log the user in.
+            auth_login(request, form.get_user())
+
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
+
+            return HttpResponse("OK")
+        else:
+            return HttpResponseBadRequest("Invalid username or password")
+    else:
+        raise Http404

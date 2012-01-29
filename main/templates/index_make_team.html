@@ -1,0 +1,31 @@
+<div data-role="page" id="make_team">
+  
+  <script type="text/javascript">
+	{% include "js/index_make_team.js" %}
+  </script>
+
+  <div data-role="header">
+	<h1>Make a Team</h1>
+  </div>
+  <div data-role="content">
+	<form id="make-team-form" action="" data-ajax=false method="POST">
+	  {% csrf_token %}
+	  <div data-role="fieldcontain">
+		<label for="team_name">Choose a team name:</label>
+		<input type="text" name="team_name" />
+	  </div>
+	  <div data-role="fieldcontain">
+		<label for="uid">Choose your teammate:</label>
+		<select name="uid" id="uid">
+		  {% for player in players %}
+		  <option value="{{player.id}}">{{player.username}}</option>
+		  {% endfor %}
+		</select>
+	  </div>
+      <button id="make-team-form-submit">Create Team</button>
+	</form>
+  </div>
+  <div data-role="footer">
+	{% include "default_footer.html" %}
+  </div>
+</div>

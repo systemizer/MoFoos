@@ -13,8 +13,25 @@
 
   {% include "index_login.html" %}
 
-{% endif %}
+{% else %}
 
 {% include "index_new_game.html" %}
+{% include "index_make_team.html" %}
+{% include "game.html" %}
+
+{% endif %}
+
+
+<a id="error-dialog-button" href="#errordialog" data-rel="dialog" data-transition="pop" style="display:none;" ></a>
+<div data-role="page" id="errordialog">
+  <div data-role="header">
+    <h1>Oops!</h1>
+  </div>    
+  <div data-role="content">
+	<span id="error-text"></span>
+  </div>    
+</div>
+
+
 
 {% endblock %}

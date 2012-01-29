@@ -1,0 +1,4 @@
+#game .score-container {text-align:center;border-bottom:thin dotted #333; margin-bottom:5px;}
+#game .score {font-size:60px;font-weight:bold;}
+
+.large-button .ui-btn-text {font-size:30pt;font-weight:bolder;}

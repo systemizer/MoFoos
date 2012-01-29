@@ -1,15 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import *
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User,related_name="profile",blank=True,null=True)
 
 class Team(models.Model):
-    name = models.CharField(max_length="63")
+    name = models.CharField(max_length=255,unique=True)
     player1 = models.ForeignKey(User,related_name="teams_player1")
     player2 = models.ForeignKey(User,blank=True,null=True,related_name="teams_player2")
     deleted = models.BooleanField(default=False)
+
 
     def is_valid(self):
         return self.player1 and self.player2 and self.player1!=self.player2
@@ -27,7 +29,12 @@ class Team(models.Model):
     def get_teams_by_user(cls,user):
         return cls.objects.filter(Q(player1=user) | Q(player2=user))
 
-
+    def save(self):
+        if Team.objects.filter(player1=self.player1,player2=self.player2).count() or Team.objects.filter(player1=self.player2,player2=self.player1).count():
+            raise ValidationError("Those players are already on a team")
+        if not self.is_valid:
+            raise ValidationError("There is no 'i' in team. Find a teammate")
+        super(Team,self).save()
             
 class Game(models.Model):
     in_progress = models.BooleanField(default=False)
@@ -42,9 +49,6 @@ class Game(models.Model):
 
     def __unicode__(self):
         return "%s vs %s" % (self.team1.name,self.team2.name)
-
-    def currently_playing(self,team):
-        return Game.objects.filter(in_progress=True).filter(Q(team1=team) | Q(team2=team))
 
     @classmethod
     def get_games_by_team(self,team):
@@ -68,31 +72,6 @@ class Game(models.Model):
         else:
             return {}
 
-    def win_game(self,team):
-        if team==self.team1 and self.team1_score==self.score_limit-1:
-            self.team1_score += 1
-            self.save()
-            outcome = Outcome(game=self,
-                              winner=self.team1,
-                              loser=self.team2,
-                              winner_score=self.team1_score,
-                              loser_score=self.team2_score)
-            outcome.save()
-        elif team==self.team2 and self.team2_score==self.score_limit-1:
-            self.team2_score += 1
-            self.save()
-            outcome = Outcome(game=self,
-                              winner=self.team2,
-                              loser=self.team1,
-                              winner_score=self.team2_score,
-                              loser_score=self.team1_score)
-            outcome.save()
-        else:
-            return False
-        return True
-
-
-
 class Outcome(models.Model):
     game = models.OneToOneField(Game,related_name="outcome")
     winner = models.ForeignKey(Team,related_name="wins")
@@ -109,10 +88,8 @@ class Outcome(models.Model):
                                    self.loser_score)
 
 class ScoreStats(models.Model):
-    #scorer = models.ForeignKey(User,related_name="scores")
     scoring_team = models.ForeignKey(Team,related_name="team_scores")
     defender_team = models.ForeignKey(Team,related_name="team_scored_against")
-    #defender = models.ForeignKey(User,related_name="scored_against")
     game = models.ForeignKey(Game,related_name="score_stats")
     created = models.DateTimeField(auto_now_add=True)
     deleted = models.BooleanField(default=False)

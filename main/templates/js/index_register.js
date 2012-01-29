@@ -5,7 +5,12 @@ $("#register").live("pagecreate",function() {
 			   'data':$('#register-form').serialize(),
 			   'type':'post',			   
 	           'success': function() {window.location = "/"},
-	           'error': function() {alert("bad!!")}
+	           'error': error_dialog
 			  });
 		});
+	   $('#register-form-submit').click(function(e) {
+											 $('#register-form').submit();
+											 return false;
+										 });
+
 });
