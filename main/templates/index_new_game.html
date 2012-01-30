@@ -3,26 +3,36 @@
 	{% include "js/index_new_game.js" %}
   </script>
   <div data-role="header">
+	<a href="#make_team" class="ui-btn-right" data-icon="plus" data-role="button">team</a>
 	<h1>New Game</h1>
   </div>
   <div data-role="content">
+	<a id="change-page-new_game" class="hidden" href="#new_game"></a>
 	<form id="new-game-form" action="/new_game/" data-ajax=false method="POST">
 	  {% csrf_token %}
 	  <div data-role="fieldcontain">
 		<label for="team">Choose your team:</label>
+		{% if player_teams %}
 		<select name="tid" id="tid">
 		  {% for team in player_teams %}
 		  <option value="{{team.id}}">{{team.name}}</option>
 		  {% endfor %}
 		</select>
+		{% else %}
+		<a href="#make_team" data-role="button">You are on no teams. Create one now!</a>
+		{% endif %}
 	  </div>
 	  <div data-role="fieldcontain">
 		<label for="against">Choose your opponent:</label>
+		{% if opponent_teams %}
 		<select name="against" id="against">
 		  {% for team in opponent_teams %}
 		  <option value="{{team.id}}">{{team.name}}</option>
-		  {% endfor %}
+		  {% endfor %}		  
 		</select>
+		{% else %}
+		<p>No opponents exist yet. Can you believe it?</p>
+		{% endif %}
 	  </div>
       <button id="new-game-form-submit" data-role="button">TIME TO FOOS</button>
 	</form>

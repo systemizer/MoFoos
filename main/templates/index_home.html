@@ -7,13 +7,19 @@
 
   <div data-role="header">
 	<h1>MOFOOS</h1>
+	{% if current_games %}
+	  {% for game in current_games %}
+	  <a data-role="button" href="#current_games" class="ui-btn-right">Current Games</a>
+	  {% endfor %}
+	{% endif %}
   </div>	  
   <div data-role="content"> 
+	<a id="change-page-home" class="hidden" href="#home"></a>
 	<h3>The Official MoPub Foos tracking App<h3>
-		<a href="#about" data-role="button" data-transition="pop">about MOFOOS</a>
+		<a href="#about" data-role="button">about MOFOOS</a>
 	  {% if not user.is_authenticated %}
-	  <a href="#login" data-role="button" data-transition="pop">login</a>
-	  <a href="#register" data-role="button" data-transition="pop">register</a>
+	  <a href="#login" data-role="button">login</a>
+	  <a href="#register" data-role="button">register</a>
 	  {% else %}
 	  <a href="#make_team" data-role="button">make a new team</a>
 	  <a href="#new_game" data-role="button">new game</a>

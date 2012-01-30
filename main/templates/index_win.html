@@ -1,0 +1,15 @@
+<div data-role="page" id="win">
+  <div data-role="header">
+	<h1><span id="winner"></span> wins!</h1>
+  </div>
+  <div data-role="content">
+	<a id="change-page-win" class="hidden" href="#win"></a>
+	<h1>You won!</h1>
+	<h3><span class="players_team"></span> vs <span class="opponents_team"></span></h3>
+	<h3><span class="players_score"></span> - <span class="opponents_score"></span></h3>
+	<a data-role="button" href="#home">Go back home</a>
+  </div>
+  <div data-role="footer">
+	{% include "default_footer.html" %}
+  </div>
+</div>

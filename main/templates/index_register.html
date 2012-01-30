@@ -6,6 +6,7 @@
 	<h1>Register</h1>
   </div>	  
   <div data-role="content"> 
+	<a id="change-page-register" class="hidden" href="#register"></a>
 	<form id="register-form" action="" data-ajax=false method="POST">
 	  {% csrf_token %}
 	  {% for field in register_form %}

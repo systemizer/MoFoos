@@ -1,13 +1,19 @@
     function update_game(data) {
-       $('#players_score').text(data['players_score']);
-       $('.players_team').text(data['players_team']);
-       $('.opponents_team').text(data['opponents_team']);
-       $('#opponents_score').text(data['opponents_score']);
+       $('span.players_score').text(data['players_score']);
+       $('span.players_team').text(data['players_team']);
+       $('span.opponents_team').text(data['opponents_team']);
+       $('span.opponents_score').text(data['opponents_score']);
 	   $('#current_game').attr("gid",data['gid']);	
-       if (data['players_score']===10) {
+		t = data;
+	   if (!data['is_valid']) {
+		   $('#game-not-valid').css('display','block')		
+	   } else {
+		   $('#game-not-valid').css('display','none')		
+	   }
+       if (data['players_score']>=10) {
 	       $("#winner").text(data['players_team']);
            win();
-       } else if (data['opponents_score'] === 10) {
+       } else if (data['opponents_score']>=10) {
 	       $("#winner").text(data['opponents_team']);
            lose();
        }
@@ -28,8 +34,9 @@
                   'dataType':'json',
                   'data':{'gid':game_id},
                   'success' : update_game, 
-                  'error' : function() {alert('error')} //to fix
+                  'error' : error_dialog
                 });
+       return false;
        });
 	   $('#decrement-score-button').click(function(event) {
 	      var game_id = $('#current_game').attr('gid');
@@ -38,18 +45,34 @@
                   'dataType':'json',
                   'data':{'gid':game_id},
                   'success' : update_game, 
-                  'error' : function() {alert('error')} //to fix
+                  'error' : error_dialog
                 });
+       return false;
 	   });
 	   $('#refresh-score-button').click(function(event) {
+		  event.preventDefault();
 	      var game_id = $('#current_game').attr('gid');
           $.ajax({'url':'/action/refresh_score/',
                   'type':'GET',
                   'dataType':'json',
                   'data':{'gid':game_id},
                   'success' : update_game, 
-                  'error' : function() {alert('error')} //to fix
-                });
+                  'error' : error_dialog
+                 });
+          return false;											
        });
+	   $('#end-game-button').click(function(event) {
+		  event.preventDefault();
+	      var game_id = $('#current_game').attr('gid');
+          $.ajax({'url':'/action/end_game/',
+                  'type':'GET',
+                  'dataType':'json',
+                  'data':{'gid':game_id},
+                  'success' : function() {window.location="/"},
+                  'error' : function(data) {window.location="/";} //weird bug!!
+                });
+       return false;
+       });
+
 
 	});

@@ -16,9 +16,11 @@ def index(request):
     if request.user.is_authenticated():
         player_teams = Team.get_teams_by_user(request.user)        
         players = User.objects.exclude(id=request.user.id)
+        current_games = Game.get_current_games_by_user(request.user)
     else:
         player_teams = []
         players = []
+        current_games = []
         
     opponent_teams = [t for t in Team.objects.all() if t not in player_teams]
 
@@ -26,7 +28,8 @@ def index(request):
     login_form = AuthenticationForm()
 
     return render_to_response("index.html",
-                              {'player_teams':player_teams,                               
+                              {'player_teams':player_teams,         
+                               'current_games':current_games,
                                'opponent_teams':opponent_teams,
                                'players':players,
                                'register_form':register_form,
@@ -73,8 +76,8 @@ def play_game(request):
 ## AJAX GAME HANDLERS
 ############
 
-#TODO: Make these ajax only
 
+@ajax_required
 def make_team(request):
     if request.method=="POST":
         team_name = request.POST.get("team_name")
@@ -95,7 +98,7 @@ def make_team(request):
     else:
         raise Http404
 
-
+@ajax_required
 def increment_score(request):
     gid = request.GET.get("gid")
     if not gid:
@@ -149,6 +152,7 @@ def increment_score(request):
     except ObjectDoesNotExist:
         return HttpResponseBadRequest("Invalid Team(s) for game")
 
+@ajax_required
 def decrement_score(request):
     gid = request.GET.get("gid")
     if not gid:
@@ -157,14 +161,15 @@ def decrement_score(request):
         game = Game.objects.get(id=gid)
         user_teams = Team.get_teams_by_user(request.user)
         if game.team1 in user_teams:
-            game.team1_score -= 1
-            game.save()
-            ScoreStats.delete_last_stat(game,game.team1)
-
+            if game.team1_score>0:
+                game.team1_score -= 1
+                game.save()
+                ScoreStats.delete_last_stat(game,game.team1)
         elif game.team2 in user_teams:
-            game.team2_score -= 1
-            game.save()
-            ScoreStats.delete_last_stat(game,game.team1)
+            if game.team2_score>0:
+                game.team2_score -= 1
+                game.save()
+                ScoreStats.delete_last_stat(game,game.team2)
         else:
             return HttpResponseBadRequest("User is not currently playing")
 
@@ -173,16 +178,25 @@ def decrement_score(request):
     except ObjectDoesNotExist:
         return HttpResponseBadRequest("Invalid Team(s) for game")
 
+@ajax_required
 def refresh_score(request):
     gid = request.GET.get("gid")
     if not gid:
         return HttpResponseBadRequest("Missing gid")
     try:        
         game = Game.objects.get(id=gid)
+
+        #see if other team has opened game
+        if not game.is_valid:
+            if game.team2.is_player(request.user):
+                game.is_valid = True
+                game.save()
+
         return HttpResponse(json.dumps(game.get_context_for_user(request.user)))
     except ObjectDoesNotExist:
         return HttpResponseBadRequest("Invalid game")
 
+@ajax_required
 def register(request):
     form = UserCreationForm(request.POST)
     if form.is_valid():
@@ -197,18 +211,31 @@ def register(request):
     else:
         return HttpResponseBadRequest("Invalid username or password")
         
+@ajax_required
 def login(request):
     if request.method == "POST":
         form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            # Okay, security checks complete. Log the user in.
             auth_login(request, form.get_user())
-
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
-
             return HttpResponse("OK")
         else:
             return HttpResponseBadRequest("Invalid username or password")
     else:
         raise Http404
+
+@ajax_required
+def end_game(request):
+    gid = request.GET.get("gid")
+    if gid:
+        try:
+            game = Game.objects.get(id=gid)
+            game.in_progress = False
+            game.save()
+            return HttpResponse("OK")
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest("Could not find game")
+    else:
+        return HttpResponseBadRequest("Could not determine game")
+    

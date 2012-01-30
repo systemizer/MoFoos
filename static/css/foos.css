@@ -2,3 +2,20 @@
 #game .score {font-size:60px;font-weight:bold;}
 
 .large-button .ui-btn-text {font-size:30pt;font-weight:bolder;}
+a.hidden, a.hidden.ui-btn {display:none;}
+
+#game-not-valid {display:none;
+				position:absolute;
+				background:#CCC;
+				top:25%;
+				left:35%;
+				border:solid medium #333;
+				width:25%;
+				font-size:20px;
+				text-align:center;
+				padding:2.5%;
+				-webkit-border-radius: 10px;
+				-moz-border-radius:10px;
+				border-radius: 10px;					
+				z-index:3;
+}

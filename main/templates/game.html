@@ -5,29 +5,35 @@
   </script>
 
   <div data-role="header">
-	<a href="/" data-role="button" data-ajax=false rel="external" data-icon="delete" data-iconpos="notext">Delete</a>
+	<a id="end-game-button" data-icon="delete">Quit</a>
+<!-- 	<a href="/" data-role="button" data-ajax=false rel="external" data-icon="delete" data-iconpos="notext">Delete</a> -->
 	<h1><span class="players_team"></span> vs. <span class="opponents_team"></span></h1>
-	<span id="current_game" gid="" style="display:none"></span>
+	<a class="ui-btn-right" id="refresh-score-button" data-icon="refresh" data_theme="d">Refresh</a>	
   </div>
   <div data-role="content">
+	<span id="current_game" gid="" class="hidden"></span>
+	<a id="change-page-game" class="hidden" href="#game"></a>
+	
+	<div id="game-not-valid">
+	  <p>Waiting for other team to join...</p>
+	</div>
 	<div class="ui-grid-a score-container">
 	  <div class="ui-block-a"><h3>Your Score</h3></div>
-	  <div class="ui-block-b"><span class="score" id="players_score">{{players_score}}</span></div>
+	  <div class="ui-block-b"><span class="score players_score"></span></div>
 	</div>
 	<div class="ui-grid-a score-container">
 	  <div class="ui-block-a"><h3><span class="opponents_team"></span> Score</h3></div>
-	  <div class="ui-block-b"><span class="score" id="opponents_score">{{opponents_score}}</span></div>
+	  <div class="ui-block-b"><span class="score opponents_score"></span></div>
 	</div>
 
 	<div class="ui-grid-a">
 	  <div class="ui-block-a large-button">
-		<button id="decrement-score-button" gid="{{gid}}" type="submit" data-theme="d">-</button>
+		<button id="decrement-score-button" type="submit" data-theme="d">-</button>
 	  </div>
 	  <div class="ui-block-b large-button">
-		<button id="score-button" gid="{{gid}}" type="submit" data-theme="b">+</button>
+		<button id="score-button" type="submit" data-theme="b">+</button>
 	  </div>
 	</div>
-	<button id="refresh-score-button" gid="{{gid}}" type="submit" data_theme="d">Refresh Scores</button>
   </div>
   <div data-role="footer">
 	{% include "default_footer.html" %}
@@ -35,28 +41,3 @@
 </div>
 
 
-<div data-role="page" id="win">
-  <div data-role="header">
-	<h1><span id="winner"></span> wins!</h1>
-  </div>
-  <div data-role="content">
-	<h1>You won!</h1>
-	<p> <a data-role="button" href="/">Go back home</a></p>
-  </div>
-  <div data-role="footer">
-	{% include "default_footer.html" %}
-  </div>
-</div>
-
-<div data-role="page" id="lose">
-  <div data-role="header">
-	<h1><span id="winner"></span> wins!</h1>
-  </div>
-  <div data-role="content">
-	<h1>You lost!</h1>
-	<p> <a data-role="button" href="/">Go back home</a></p>
-  </div>
-  <div data-role="footer">
-	{% include "default_footer.html" %}
-  </div>
-</div>

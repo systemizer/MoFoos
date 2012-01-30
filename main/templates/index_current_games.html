@@ -1,0 +1,20 @@
+<div data-role="page" id="current_games">
+  <div data-role="header">
+	<h1>Current Games</h1>
+  </div>
+  <div data-role="content">
+	<a id="change-page-current_games" class="hidden" href="#current_games"></a>
+	{% if current_games %}
+	{% for game in current_games %}
+	<a data-role="button" class="join_game" id="{{game.id}}">
+	  {{game.team1.name}} vs. {{game.team2.name}}
+	</a>
+	{% endfor %}
+	{% else %}
+	<h3>Currently playing no games</h3>
+	{% endif %}
+  </div>
+  <div data-role="footer">
+	{% include "default_footer.html" %}
+  </div>
+</div>

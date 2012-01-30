@@ -37,7 +37,8 @@ class Team(models.Model):
         super(Team,self).save()
             
 class Game(models.Model):
-    in_progress = models.BooleanField(default=False)
+    is_valid = models.BooleanField(default=False)
+    in_progress = models.BooleanField(default=True)
     team1 = models.ForeignKey(Team,related_name="games_team1")
     team2 = models.ForeignKey(Team,related_name="games_team2")
     team1_score = models.IntegerField(default=0)
@@ -51,8 +52,13 @@ class Game(models.Model):
         return "%s vs %s" % (self.team1.name,self.team2.name)
 
     @classmethod
-    def get_games_by_team(self,team):
-        return Game.objects.filter(Q(team1=team) | Q(team2=team))
+    def get_current_games_by_user(cls,user):
+        player_teams = Team.get_teams_by_user(user)
+        return cls.objects.filter(in_progress=True).filter(Q(team1__in=player_teams) | Q(team2__in=player_teams))
+
+    @classmethod
+    def get_games_by_team(cls,team):
+        return cls.objects.filter(Q(team1=team) | Q(team2=team))
 
     def get_context_for_user(self,user):
         if not user:
@@ -62,13 +68,15 @@ class Game(models.Model):
                     'players_score':self.team1_score,
                     'opponents_team':self.team2.name,
                     'opponents_score':self.team2_score,
-                    'gid':self.id}            
+                    'gid':self.id,
+                    'is_valid':self.is_valid}            
         elif self.team2.is_player(user):
             return {'players_team':self.team2.name,
                     'players_score':self.team2_score,
                     'opponents_team':self.team1.name,
                     'opponents_score':self.team1_score,
-                    'gid':self.id}            
+                    'gid':self.id,
+                    'is_valid':self.is_valid}         
         else:
             return {}
 

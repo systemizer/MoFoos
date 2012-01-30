@@ -7,6 +7,7 @@
 	<h1>Login</h1>
   </div>	  
   <div data-role="content"> 
+	<a id="change-page-login" class="hidden" href="#login"></a>
 	<form id="login-form" action="" data-ajax=false method="POST">
 	  {% csrf_token %}
 	  {% for field in login_form %}
