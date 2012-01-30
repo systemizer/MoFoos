@@ -1,0 +1,17 @@
+{% extends "stats_base.html" %}
+
+{% block content %}
+<h1>Edit Profile</h1>
+<form action="?uid={{profile.user.id}}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <table>
+	{{form.as_table}}
+	<tr>
+	  <td colspan="2">
+		<input type="submit" value="Edit Profile" />
+	  </td>
+	</tr>
+  </table>
+</form>
+
+{% endblock %}

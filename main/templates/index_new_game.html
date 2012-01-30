@@ -14,8 +14,8 @@
 		<label for="team">Choose your team:</label>
 		{% if player_teams %}
 		<select name="tid" id="tid">
-		  {% for team in player_teams %}
-		  <option value="{{team.id}}">{{team.name}}</option>
+		  {% for team_name,teammate,id in player_teams %}
+		  <option value="{{id}}">{{team_name}} ({{teammate}})</option>
 		  {% endfor %}
 		</select>
 		{% else %}
@@ -26,8 +26,8 @@
 		<label for="against">Choose your opponent:</label>
 		{% if opponent_teams %}
 		<select name="against" id="against">
-		  {% for team in opponent_teams %}
-		  <option value="{{team.id}}">{{team.name}}</option>
+		  {% for team_name,player1,player2,id in opponent_teams %}
+		  <option value="{{id}}">{{team_name}} ({{player1}},{{player2}})</option>
 		  {% endfor %}		  
 		</select>
 		{% else %}

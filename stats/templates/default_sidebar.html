@@ -1,0 +1,48 @@
+<div class="profile row span4">
+  {% if user.is_authenticated %}
+  <div class="span2">
+	{% if user.get_profile.image %}
+	<img class="profile-image" src="{{user.get_profile.image.url}}" />
+	{% else %}
+	<img class="profile-image" src="{{STATIC_URL}}images/filler.png" />
+	{% endif %}
+  </div>
+  <div class="span2 profile-data">
+	<div class="profile-name">{{user.username}}</div>
+	<ul class="profile-actions">
+	  <li><a href="/stats/profile/?uid={{user.id}}">profile</a></li>
+	  <li><a id="logout-button">logout</a></li>
+	</ul>
+  </div>
+  
+  {% else %}
+  <form id="login-form" class="span3" action="/login/" method="POST">
+	{% csrf_token %}
+	{{login_form.as_p}}
+	<input type="submit" value="Login" />
+  </form>
+  {% endif %}
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+ $('#login-form').submit(function(event)  {
+    event.preventDefault();
+    $.ajax({'url':'/login/',
+            'data':$('#login-form').serialize(),
+            'type':'post',
+            'success':function() {window.location="/stats/"},
+            'error':function() {alert("login failed")}
+           });
+});
+ $('#logout-button').click(function(event)  {
+    event.preventDefault();
+    $.ajax({'url':'/auth/logout/',
+            'type':'get',
+            'success':function() {window.location="/stats/"},
+            'error':function() {alert('logout failed')}
+           });
+});
+
+})
+</script>
+

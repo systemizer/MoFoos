@@ -1,0 +1,42 @@
+/*overall */
+
+.spacing {padding:2px;margin:2px;}
+#container {padding-top:60px;}
+.container-fluid > .sidebar {top:60px;}
+a:hover {text-decoration:none;}
+
+/* topbar */
+.topbar .active-links {float:right}
+
+.wall { background:#EEEEEE; width:800px; min-height:800px; padding:10px; border:solid thin #DDD;}
+
+.update {margin-left:40px; padding-left:40px; margin-top:20px; padding-top:10px;background:#DDDDDD;}
+.row .update-text {font-size:12pt;position:relative;left:20px;margin-left:0px;}
+a.update_text_link {color:#339;}
+a.update_text_link:hover {color:#333;}
+.update-time {position:relative;top:10px;left:40px;}
+
+ul.row {list-style:none;}
+ul.row > li {display:inline;}
+
+/* update box */
+#update-nav {margin-left:10px}
+.update-img {margin-left:0px; height:50px;width:50px;float:left;display:inline;}
+
+/* profile */
+.profile.row {margin-left:0px;}
+.profile.row > [class*="span"] {margin:0px;padding:0px;} 
+.profile .profile-image {width:100%;}
+.profile .profile-name {font-size:14pt; line-height:20px;}
+.profile .profile-actions {list-style:none;margin-left:0px;margin-top:5px;}
+.profile.row .profile-data {padding:10px;}
+
+.votebox {float:left;position:relative;right:5px;top:10px;}
+.votebox .votebox-score {font-size:14pt;position:relative;left:7px;}
+
+
+/* apps */
+.apps {margin-top:40px;}
+.apps .app {height:200px;font-size:15px;padding:10px;border:dashed thin #333;margin-bottom:20px;}
+.apps .app hr {border:solid thin #333;margin-top:12px;margin-bottom:9px;}
+.apps .app .app-title {font-size:30px;}

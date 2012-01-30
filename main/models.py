@@ -3,8 +3,12 @@ from django.contrib.auth.models import *
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 
+from foos.stats.models import OutcomeUpdate, ScoreUpdate, Update
+
 class UserProfile(models.Model):
     user = models.OneToOneField(User,related_name="profile",blank=True,null=True)
+    image = models.ImageField(upload_to="%m/%y/%d/",null=True,blank=True)
+    bio = models.TextField(blank=True,null=True)
 
 class Team(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -16,6 +20,14 @@ class Team(models.Model):
     def is_valid(self):
         return self.player1 and self.player2 and self.player1!=self.player2
     
+    def get_teammate(self,user):
+        if self.player1==user:
+            return self.player2
+        elif self.player2==user:
+            return self.player1
+        else:
+            return None
+
     def __unicode__(self):
         return self.name
 
@@ -34,7 +46,7 @@ class Team(models.Model):
             raise ValidationError("Those players are already on a team")
         if not self.is_valid:
             raise ValidationError("There is no 'i' in team. Find a teammate")
-        super(Team,self).save()
+        return super(Team,self).save()
             
 class Game(models.Model):
     is_valid = models.BooleanField(default=False)
@@ -95,9 +107,22 @@ class Outcome(models.Model):
                                    self.loser.name,
                                    self.loser_score)
 
+    def save(self):
+        result = super(Outcome,self).save()
+        update = Update(update_text = OutcomeUpdate.text_template % (self.winner.name,
+                                                                       self.loser.name,
+                                                                       self.winner_score,
+                                                                       self.loser_score),
+                               update_url = OutcomeUpdate.url_template % self.id,
+                               created = self.created)
+        update.save()
+        return result
+
 class ScoreStats(models.Model):
     scoring_team = models.ForeignKey(Team,related_name="team_scores")
+    scoring_team_score = models.IntegerField()
     defender_team = models.ForeignKey(Team,related_name="team_scored_against")
+    defender_team_score = models.IntegerField()
     game = models.ForeignKey(Game,related_name="score_stats")
     created = models.DateTimeField(auto_now_add=True)
     deleted = models.BooleanField(default=False)
@@ -109,6 +134,19 @@ class ScoreStats(models.Model):
         else:
             cls.objects.filter(game=game).filter(scoring_team=team).order_by("-created")[0].delete()
     
+    def save(self):
+        result = super(ScoreStats,self).save()
+        Update(update_text = ScoreUpdate.text_template % (self.scoring_team.name,
+                                                               self.defender_team.name,
+                                                               self.scoring_team_score,
+                                                               self.defender_team_score),
+                    update_url = "",
+                    created = self.created).save()
+        
+
+        return result
+        
+
 class NakedLap(models.Model):
     team = models.ForeignKey(Team,related_name="naked_laps")
     game = models.OneToOneField(Game,related_name="naked_lap")

@@ -14,22 +14,25 @@ from foos.main.decorators import ajax_required, login_required
 def index(request):
     if request.user.is_authenticated():
         player_teams = Team.get_teams_by_user(request.user)        
+        player_teams_context = [(t.name,t.get_teammate(request.user),t.id) for t in player_teams]
         players = User.objects.exclude(id=request.user.id)
         current_games = Game.get_current_games_by_user(request.user)
     else:
         player_teams = []
+        player_teams_context = []
         players = []
         current_games = []
         
     opponent_teams = [t for t in Team.objects.all() if t not in player_teams]
+    opponent_teams_context = [(t.name,t.player1,t.player2,t.id) for t in opponent_teams]
 
     register_form = UserCreationForm()
     login_form = AuthenticationForm()
 
     return render_to_response("index.html",
-                              {'player_teams':player_teams,         
+                              {'player_teams':player_teams_context,         
                                'current_games':current_games,
-                               'opponent_teams':opponent_teams,
+                               'opponent_teams':opponent_teams_context,
                                'players':players,
                                'register_form':register_form,
                                'login_form':login_form},
@@ -103,7 +106,9 @@ def increment_score(request):
             game.team1_score += 1                
             game.save()
             ScoreStats(scoring_team=game.team1,
+                       scoring_team_score = game.team1_score,
                       defender_team = game.team2,
+                       defender_team_score = game.team2_score,
                       game = game).save()
 
 
@@ -112,7 +117,9 @@ def increment_score(request):
             game.team2_score +=1
             game.save()
             ScoreStats(scoring_team=game.team2,
+                       scoring_team_score = game.team2_score,
                       defender_team = game.team1,
+                       defender_team_score = game.team1_score,
                       game = game).save()
 
 

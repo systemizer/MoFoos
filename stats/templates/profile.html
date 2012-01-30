@@ -1,0 +1,22 @@
+{% extends "stats_base.html" %}
+
+
+{% block content %}
+<h1>{{profile.user.username}}'s profile</h1>
+<table>
+  <tr>
+	<td>Username</td>
+	<td>{{profile.user.username}}</td>
+  </tr>
+  {% if profile.image %}
+  <tr>
+	<td>Image:</td>
+	<td><img src="{{profile.image.url}}" /></td>
+  </tr>
+  {% endif %}
+  <tr>
+	<td>bio:</td>
+	<td>profile.bio</td>
+  </tr>
+</table>
+{% endblock %}
