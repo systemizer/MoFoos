@@ -5,12 +5,11 @@ from django.shortcuts import render_to_response
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import Http404, HttpResponseBadRequest, HttpResponseRedirect, HttpResponse
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate,login as auth_login
 from django.conf import settings
 
 from foos.main.models import *
-from foos.main.decorators import ajax_required
+from foos.main.decorators import ajax_required, login_required
 
 def index(request):
     if request.user.is_authenticated():
@@ -36,6 +35,14 @@ def index(request):
                                'login_form':login_form},
                               RequestContext(request))
 
+
+############
+## AJAX GAME HANDLERS
+############
+
+
+@login_required
+@ajax_required
 def new_game(request):
     if request.method=="POST":
         score_limit = 10 #hardcoded for now
@@ -58,25 +65,7 @@ def new_game(request):
     else:
         raise Http404
 
-                        
-
-def play_game(request):
-    gid = request.GET.get("gid")
-    context = {}
-    if not gid:
-        return HttpResponseBadRequest("Could not determine game id")
-    try:
-        game = Game.objects.select_related(depth=1).get(id=gid)
-        game_context = game.get_context_for_user(request.user)
-        return render_to_response("game.html",game_context,RequestContext(request))        
-    except ObjectDoesNotExist:
-        return HttpResponseBadRequest("Invalid Game ID")
-
-############
-## AJAX GAME HANDLERS
-############
-
-
+@login_required
 @ajax_required
 def make_team(request):
     if request.method=="POST":
@@ -98,6 +87,7 @@ def make_team(request):
     else:
         raise Http404
 
+@login_required
 @ajax_required
 def increment_score(request):
     gid = request.GET.get("gid")
@@ -105,6 +95,8 @@ def increment_score(request):
         return HttpResponseBadRequest("Missing gid")
     try:        
         game = Game.objects.get(id=gid)
+        if not game.is_valid:
+            return HttpResponseBadRequest("Game needs to be validated by opposing team. Please wait.")
         user_teams = Team.get_teams_by_user(request.user)
 
         if game.team1 in user_teams:
@@ -152,6 +144,7 @@ def increment_score(request):
     except ObjectDoesNotExist:
         return HttpResponseBadRequest("Invalid Team(s) for game")
 
+@login_required
 @ajax_required
 def decrement_score(request):
     gid = request.GET.get("gid")
@@ -159,6 +152,8 @@ def decrement_score(request):
         return HttpResponseBadRequest("Missing gid")
     try:        
         game = Game.objects.get(id=gid)
+        if not game.is_valid:
+            return HttpResponseBadRequest("Game needs to be validated by opposing team. Please wait.")
         user_teams = Team.get_teams_by_user(request.user)
         if game.team1 in user_teams:
             if game.team1_score>0:
@@ -225,6 +220,7 @@ def login(request):
     else:
         raise Http404
 
+@login_required
 @ajax_required
 def end_game(request):
     gid = request.GET.get("gid")
