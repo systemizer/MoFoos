@@ -10,10 +10,11 @@ function change_page(pageName) {
 function poll() {
 	if ($("#game").hasClass("ui-page-active") && $('#current_game').attr("gid")) {
 		var gameId = $('#current_game').attr("gid");
+		var players_score = $('span.players_score').first().text();
 		$.ajax({'url':'/action/refresh_score/',
 				'type':'GET',
 				'dataType':'json',
-				'data':{'gid':gameId},
+				'data':{'gid':gameId,'players_score':players_score},
 				'success' : update_game
 			   });
 		}

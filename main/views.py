@@ -187,6 +187,17 @@ def refresh_score(request):
         return HttpResponseBadRequest("Missing gid")
     try:        
         game = Game.objects.get(id=gid)
+        players_score=  request.GET.get("players_score")
+        if players_score>=0 and game.is_valid:
+            user_teams = Team.get_teams_by_user(request.user)
+            if game.team1 in user_teams:
+                if game.team1_score>0:
+                    game.team1_score = players_score
+                    game.save()
+                elif game.team2 in user_teams:
+                    game.team2_score = players_score
+                    game.save()
+
 
         #see if other team has opened game
         if not game.is_valid:
