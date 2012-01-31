@@ -1,19 +1,30 @@
 {% extends "stats_base.html" %}
 
+{% block extrahead %}
+<script type="text/javascript" src="{{STATIC_URL}}js/bootstrap-tabs.js"></script>
+{% endblock %}
 
 {% block content %}
 <div class="container">
   <div class="row">
 	<div class="span14 main-content">
-	  <div class="wall">
-		{% for update in updates %}
-		{% include "updatebox.html" %}
-		{% endfor %}
-	  </div>
+	  <ul class="tabs" data-tabs="tabs">
+		<li class="active"><a href="#wall">Wall</a></li>
+		<li><a href="#leaderboard">Leaderboard</a></li>
+	  </ul>
+	  <div class="pill-content">
+		<div class="active" id="wall">
+		  {% for update in updates %}
+		  {% include "updatebox.html" %}
+		  {% endfor %}
+		</div>
+		<div id="leaderboard">
+		  {% for team in teams_stats %}
+		  {% include "teambox.html" %}
+		  {% endfor %}
+		</div>
+	  </div>	  
 	</div>
-<!-- 	<div class="span4 apps"> -->
-<!-- 	  {% include "app.html" %} -->
-<!-- 	</div> -->
   </div>
 </div>
 {% endblock %}

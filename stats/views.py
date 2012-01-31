@@ -8,13 +8,16 @@ from django.contrib.auth.forms import AuthenticationForm
 
 from foos.stats.forms import UserProfileForm
 from foos.stats.models import *
-from foos.main.models import Outcome
+from foos.main.models import Outcome, Team
 
 
 def index(request):
     updates = Update.objects.all().order_by("-created")[:20]
+    teams_stats = [t.get_brief_stats() for t in Team.objects.all()]
+    teams_stats = sorted(teams_stats,key=lambda k: k['wins']*1.5-k['losses'])
     login_form = AuthenticationForm()
     return render_to_response("stats_index.html",{'updates':updates,
+                                                  'teams_stats' : teams_stats,
                                                   'login_form':login_form},
                               RequestContext(request))
                               
@@ -61,3 +64,13 @@ def profile(request):
         
 
                 
+def view_team(request):
+    tid = request.GET.get("tid")
+    if not tid:
+        return HttpResponseBadRequest("Could not find team")
+    else:
+        try:
+            team = Team.objects.get(id=tid)
+            return render_to_response("view_team.html",{'team':team},RequestContext(request))
+        except ObjectDoesNotExist:
+            return HttpResponseBadRequest("Could not find team")

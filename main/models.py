@@ -20,6 +20,12 @@ class Team(models.Model):
     def is_valid(self):
         return self.player1 and self.player2 and self.player1!=self.player2
     
+    def get_brief_stats(self):
+        return {'name':self.name,
+                'id':self.id,
+                'wins':self.wins.count(),
+                'losses':self.losses.count()}
+
     def get_teammate(self,user):
         if self.player1==user:
             return self.player2

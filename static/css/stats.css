@@ -8,7 +8,7 @@ a:hover {text-decoration:none;}
 /* topbar */
 .topbar .active-links {float:right}
 
-.wall { background:#EEEEEE; width:800px; min-height:800px; padding:10px; border:solid thin #DDD;}
+#wall { background:#EEEEEE; width:800px; min-height:800px; padding:10px; border:solid thin #DDD;}
 
 .update {margin-left:40px; padding-left:40px; margin-top:20px; padding-top:10px;background:#DDDDDD;}
 .row .update-text {font-size:12pt;position:relative;left:20px;margin-left:0px;}
