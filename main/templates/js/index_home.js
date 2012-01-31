@@ -8,7 +8,6 @@ function change_page(pageName) {
 }
 
 function poll() {
-	console.log("polling...");
 	if ($("#game").hasClass("ui-page-active") && $('#current_game').attr("gid")) {
 		var gameId = $('#current_game').attr("gid");
 		$.ajax({'url':'/action/refresh_score/',
