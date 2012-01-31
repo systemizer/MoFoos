@@ -10,6 +10,11 @@
 	{% endblock %}
   </head> 
   <body> 	
+	<script type="text/javascript">
+	  $.pageLoading(false);
+	  $('body').css('display:none;')
+	  $(document).ready(function() {$.pageLoading(true)});
+	</script>
 	{% block body %}
 	{% endblock %}
   </body>
