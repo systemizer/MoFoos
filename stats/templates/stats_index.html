@@ -20,6 +20,9 @@
 		</div>
 		<div id="leaderboard">
 		  {% for team in teams_stats %}
+		  <div class="standing">
+		  {{ forloop.counter }}
+		  </div>
 		  {% include "teambox.html" %}
 		  {% endfor %}
 		</div>

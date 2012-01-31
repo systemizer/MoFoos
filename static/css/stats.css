@@ -40,3 +40,7 @@ ul.row > li {display:inline;}
 .apps .app {height:200px;font-size:15px;padding:10px;border:dashed thin #333;margin-bottom:20px;}
 .apps .app hr {border:solid thin #333;margin-top:12px;margin-bottom:9px;}
 .apps .app .app-title {font-size:30px;}
+
+/*stats page */
+.standing {padding:5px; width:100%; background-color:#999;color:#CCC;margin:5px;}
+.teambox {margin-top:20px;margin-bottom:20px;}}
