@@ -28,6 +28,10 @@
 
 	$('#game').live('pagecreate',function() {
 	   $('#score-button').click(function(event) {
+		  $players_score = $('span.payers_score');
+		  var cur_score = parseInt($players_score.text());
+		  if (cur_score)
+             $players_score.text(cur_score+1);								  
 	      var game_id = $('#current_game').attr('gid');
           $.ajax({'url':'/action/increment_score/',
                   'type':'GET',
@@ -39,6 +43,10 @@
        return false;
        });
 	   $('#decrement-score-button').click(function(event) {
+		  $players_score = $('span.payers_score');
+		  var cur_score = parseInt($players_score.text());
+		  if (cur_score)
+             $players_score.text(cur_score-1);								  
 	      var game_id = $('#current_game').attr('gid');
           $.ajax({'url':'/action/decrement_score/',
                   'type':'GET',
