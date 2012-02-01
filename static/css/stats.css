@@ -43,4 +43,25 @@ ul.row > li {display:inline;}
 
 /*stats page */
 .standing {padding:5px; width:100%; background-color:#999;color:#CCC;margin:5px;}
-.teambox {margin-top:20px;margin-bottom:20px;}}
+.teambox {margin-top:20px;margin-bottom:20px;}
+
+
+.teambio {font-size:20px;line-height:25px;}
+ul.recent-activity {list-style:none;margin-top:10px;}
+ul.recent-activity .activity {background:#AAA; padding:10px; margin:10px; color:#333}
+ul.recent-activity .activity:hover {background:#666;color:#111;}
+
+
+.players {margin-left:10px;}
+.playerbox {border:solid thin #CFF;
+		    margin:10px;
+			padding:10px;
+			background:#EEF;}
+
+.playerbox .info {padding:5px}
+.playerbox .info .name { font-size:25px;}
+.playerbox .info .name small { font-size:14px;font-variant:small-caps}
+.playerbox .info .bio {color:#AAA;font-style:italic;font-size:16px;margin-top:10px}		   
+.playerbox .info ul.other-teams {list-style:none;margin-left:0;margin-top:10px;}
+.playerbox .info ul.other-teams li {display:inline;}
+.playerbox .info ul.other-teams li a {background-color:#DDD;display:inline;padding:5px}

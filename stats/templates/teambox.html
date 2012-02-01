@@ -3,7 +3,7 @@
 	<img class="update-img" src="{{STATIC_URL}}images/filler.png" />
 	<a href="/stats/view/team/?tid={{team.id}}">
 	  <div class="span9 update-text">
-		{{team.name}} - ({{team.wins}}-{{team.losses}})
+		{{team.name}} - ({{team.wins.count}}-{{team.losses.count}}) - {{team.player1.username}} , {{team.player2.username}}
 	  </div>
 	</a>
 	<p style="clear:both"></p>	  

@@ -1,8 +1,94 @@
 {% extends "stats_base.html" %}
 
-
 {% block content %}
-<div class="container">
-  This will be the team page for {{team.name}}
+<div class="team-container">
+  <div class="row span16">
+	{% if edit %}
+	<div class="alert-message info">This is your team. <a href="/stats/edit/team/?tid={{team.id}}">Click here to edit</a></div>
+	{% endif %}
+	<img class="span4" src="{{STATIC_URL}}images/filler.png" />
+	<div class="span11 well">
+	  <h1>{{team.name}}</h1>
+	  <p class="teambio">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the</p>
+	</div>
+  </div>
+  <div class="row span16">
+	<div class="span10">
+	  <h2>The Team</h2>
+	  <div class="players">
+		<div class="playerbox row">
+		  {% if team.player1.image %}
+		  <img class="span2" src="{{team.player1.get_profile.image.url}}" />
+		  {% else %}
+		  <img class="span2" src="{{STATIC_URL}}images/filler.png" />
+		  <div class="info span6">
+			<div class="name">
+			  <a href="/stats/profile/?uid={{team.player1.id}}">{{team.player1.username}}</a>
+			  <small>Overall record: {{team.player1.get_profile.get_record}}</small>
+			</div>
+			<div class="bio">
+			  {% if team.player1.get_profile.bio %}
+			  {{team.player1.get_profile.bio}}
+			  {% else %}
+			  no bio
+			  {% endif %}
+			</div>
+			<ul class="other-teams">
+			  {% if team.player1.get_profile.get_teams %}
+			  {% for playerteam in team.player1.get_profile.get_teams.all %}
+			  <li><a href="/stats/view/team/?tid={{playerteam.id}}">{{playerteam}}</a></li>
+			  {% endfor %}
+			  {% else %}
+			  <li>{{team.player1.username}} is no no other teams</li>
+			  {% endif %}			
+			</ul>			
+		  </div>
+		  {% endif %}
+		</div>
+		<div class="playerbox row">
+		  {% if team.player2.image %}
+		  <img class="span2" src="{{team.player2.get_profile.image.url}}" />
+		  {% else %}
+		  <img class="span2" src="{{STATIC_URL}}images/filler.png" />
+		  <div class="info span6">
+			<div class="name">
+			  <a href="/stats/profile/?uid={{team.player2.id}}">{{team.player2.username}}</a>
+			  <small>Overall record: {{team.player2.get_profile.get_record}}</small>
+			</div>
+			<div class="bio">
+			  {% if team.player2.get_profile.bio %}
+			  {{team.player2.get_profile.bio}}
+			  {% else %}
+			  no bio
+			  {% endif %}
+			</div>
+			<ul class="other-teams">
+			  {% if team.player2.get_profile.get_teams %}
+			  {% for playerteam in team.player2.get_profile.get_teams.all %}
+			  <li><a href="/stats/view/team/?tid={{playerteam.id}}">{{playerteam}}</a></li>
+			  {% endfor %}
+			  {% else %}
+			  <li>{{team.player2.username}} is no no other teams</li>
+			  {% endif %}			
+			</ul>			
+		  </div>
+		  {% endif %}
+		</div>
+	  </div>
+	</div>
+	<div class="span5">
+	  <h2>Recent Activity</h2>
+	  <ul class="recent-activity well">
+		{% for outcome in team.get_recent_history %}
+		<a href="/stats/view/outcome/?oid={{outcome.id}}">
+		  <li>			
+			<div class="activity">
+			  {{outcome.winner.name}} defeated {{outcome.loser.name}} {{outcome.winner_score}} - {{outcome.loser_score}}
+			</div>
+		  </li>
+		</a>
+		{% endfor %}
+	  </ul>
+	</div>
 </div>
 {% endblock %}

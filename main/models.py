@@ -10,8 +10,20 @@ class UserProfile(models.Model):
     image = models.ImageField(upload_to="%m/%y/%d/",null=True,blank=True)
     bio = models.TextField(blank=True,null=True)
 
+
+    def get_record(self):
+        teams = Team.get_teams_by_user(self.user)
+        wins = sum([team.wins.count() for team in teams])
+        losses = sum([team.losses.count() for team in teams])
+        return (wins,losses)
+
+    def get_teams(self):
+        return Team.get_teams_by_user(self.user)
+        
 class Team(models.Model):
     name = models.CharField(max_length=255,unique=True)
+    bio = models.TextField(null=True,blank=True)
+    image = models.ImageField(upload_to="%m/%y/%d/",null=True,blank=True)
     player1 = models.ForeignKey(User,related_name="teams_player1")
     player2 = models.ForeignKey(User,blank=True,null=True,related_name="teams_player2")
     deleted = models.BooleanField(default=False)
@@ -26,6 +38,9 @@ class Team(models.Model):
                 'wins':self.wins.count(),
                 'losses':self.losses.count()}
 
+    def get_recent_history(self):
+        return Outcome.get_team_history(self)[:10]
+                
     def get_teammate(self,user):
         if self.player1==user:
             return self.player2
@@ -123,6 +138,10 @@ class Outcome(models.Model):
                                created = self.created)
         update.save()
         return result
+
+    @classmethod
+    def get_team_history(cls,team):
+        return Outcome.objects.filter(Q(winner=team) | Q(loser=team)).order_by('-created')
 
 class ScoreStats(models.Model):
     scoring_team = models.ForeignKey(Team,related_name="team_scores")
