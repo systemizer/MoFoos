@@ -88,6 +88,13 @@
 	<div class="span5">
 	  <h2>Recent Activity</h2>
 	  <ul class="recent-activity well">
+		{% if not team.get_recent_history %}
+		<li>			
+		  <div class="activity">
+			No recent history
+		  </div>
+		</li>
+		{% else %}
 		{% for outcome in team.get_recent_history %}
 		<a href="/stats/view/outcome/?oid={{outcome.id}}">
 		  <li>			
@@ -97,6 +104,7 @@
 		  </li>
 		</a>
 		{% endfor %}
+		{% endif %}
 	  </ul>
 	</div>
 </div>
