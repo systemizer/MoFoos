@@ -21,7 +21,7 @@
 	  <h2>The Team</h2>
 	  <div class="players">
 		<div class="playerbox row">
-		  {% if team.player1.image %}
+		  {% if team.player1.get_profile.image %}
 		  <img class="span2" src="{{team.player1.get_profile.image.url}}" />
 		  {% else %}
 		  <img class="span2" src="{{STATIC_URL}}images/filler.png" />
@@ -50,7 +50,7 @@
 		  {% endif %}
 		</div>
 		<div class="playerbox row">
-		  {% if team.player2.image %}
+		  {% if team.player2.get_profile.image %}
 		  <img class="span2" src="{{team.player2.get_profile.image.url}}" />
 		  {% else %}
 		  <img class="span2" src="{{STATIC_URL}}images/filler.png" />
