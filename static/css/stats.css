@@ -11,7 +11,8 @@ a:hover {text-decoration:none;}
 #wall { background:#EEEEEE; width:800px; min-height:800px; padding:10px; border:solid thin #DDD;}
 
 .update {margin-left:40px; padding-left:40px; margin-top:20px; padding-top:10px;background:#DDDDDD;}
-.row .update-text {font-size:12pt;position:relative;left:20px;margin-left:0px;}
+.row .update-text {font-size:22px;position:relative;left:20px;margin-left:0px;}
+.row .update-text small {font-size:14px;font-variant:small-caps;}}
 a.update_text_link {color:#339;}
 a.update_text_link:hover {color:#333;}
 .update-time {position:relative;top:10px;left:40px;}
@@ -42,7 +43,8 @@ ul.row > li {display:inline;}
 .apps .app .app-title {font-size:30px;}
 
 /*stats page */
-.standing {padding:5px; width:100%; background-color:#999;color:#CCC;margin:5px;}
+.standing {position:relative;top:40px;font-size:40px;}
+/*.standing {padding:5px; width:100%; background-color:#999;color:#CCC;margin:5px;}*/
 .teambox {margin-top:20px;margin-bottom:20px;}
 
 
@@ -52,16 +54,28 @@ ul.recent-activity .activity {background:#AAA; padding:10px; margin:10px; color:
 ul.recent-activity .activity:hover {background:#666;color:#111;}
 
 
+#leaderboard .leaderboard-entry {border-bottom:solid thin #CCC;}
+
 .players {margin-left:10px;}
-.playerbox {border:solid thin #CFF;
+.teamplayer-box {border:solid thin #CFF;
 		    margin:10px;
 			padding:10px;
 			background:#EEF;}
 
-.playerbox .info {padding:5px}
-.playerbox .info .name { font-size:25px;}
-.playerbox .info .name small { font-size:14px;font-variant:small-caps}
-.playerbox .info .bio {color:#AAA;font-style:italic;font-size:16px;margin-top:10px}		   
-.playerbox .info ul.other-teams {list-style:none;margin-left:0;margin-top:10px;}
-.playerbox .info ul.other-teams li {display:inline;}
-.playerbox .info ul.other-teams li a {background-color:#DDD;display:inline;padding:5px}
+.teamplayer-box .info {padding:5px}
+.teamplayer-box .info .name { font-size:25px;}
+.teamplayer-box .info .name small { font-size:14px;font-variant:small-caps}
+.teamplayer-box .info .bio {color:#AAA;font-style:italic;font-size:16px;margin-top:10px}		   
+.teamplayer-box .info ul.other-teams {list-style:none;margin-left:0;margin-top:10px;}
+.teamplayer-box .info ul.other-teams li {display:inline;}
+.teamplayer-box .info ul.other-teams li a {background-color:#DDD;display:inline;padding:5px}
+
+
+.playerbox .name {font-size:20px;margin-left:20px;}
+.playerbox .name small {font-size:12px; font-variant:small-caps}
+.playerbox ul.teams {list-style:none;position:relative;top:7px;margin:0px;padding:0px;left:10px;}
+.playerbox ul.teams li {display:inline; background-color:#EEE;padding:5px;}
+.playerbox {margin-left:40px; padding-left:40px; margin-top:20px; padding-top:10px;background:#DDD;}		   
+
+.team-header-info {min-height:180px;}
+.player-entry {border-bottom: solid thin #CCC;padding-bottom:10px;}

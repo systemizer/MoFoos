@@ -1,0 +1,21 @@
+{% load formatters %}
+
+<div class="playerbox span12">
+  <div class="row">
+	{% if player.get_profile.image %}
+	<img class="update-img" src="{{player.get_profile.image.url}}" />
+	{% else %}
+	<img class="update-img" src="{{STATIC_URL}}images/filler.png" />
+	{% endif %}
+	<a class="name span10" href="/profile/?uid={{player.id}}">
+	  {{player.username}}
+	  <small>Overall Record: {{player.get_profile.get_record|format_record}}</small>
+	</a>	
+	<ul class="teams span11">
+	  <li>Teams:</li>
+	  {% for team in player.get_profile.get_teams.all %}
+	  <li><a href="/stats/view/team/?tid={{team.id}}">{{team.name}}</a></li>
+	  {% endfor %}
+	</ul>	  
+  </div>
+</div>

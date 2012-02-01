@@ -7,7 +7,7 @@
 	{% endif %}
 	<a href="/stats/view/team/?tid={{team.id}}">
 	  <div class="span9 update-text">
-		{{team.name}} - ({{team.wins.count}}-{{team.losses.count}}) - {{team.player1.username}} , {{team.player2.username}}
+		{{team.name}}  ({{team.player1.username}} , {{team.player2.username}}) <small>Overall Record ({{team.wins.count}}-{{team.losses.count}})</small>
 	  </div>
 	</a>
 	<p style="clear:both"></p>	  

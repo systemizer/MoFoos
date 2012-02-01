@@ -11,6 +11,7 @@
 	  <ul class="tabs" data-tabs="tabs">
 		<li class="active"><a href="#wall">Wall</a></li>
 		<li><a href="#leaderboard">Leaderboard</a></li>
+		<li><a href="#topplayers">Top Players</a></li>
 	  </ul>
 	  <div class="pill-content">
 		<div class="active" id="wall">
@@ -20,10 +21,22 @@
 		</div>
 		<div id="leaderboard">
 		  {% for team in teams %}
-		  <div class="standing">
-		  {{ forloop.counter }}
-		  </div>
+		  <div class="leaderboard-entry row">
+			<div class="standing span1">
+			  {{ forloop.counter }}
+			</div>
 		  {% include "teambox.html" %}
+		  </div>
+		  {% endfor %}			
+		</div>
+		<div id="topplayers">
+		  {% for player in players %}
+		  <div class="player-entry row">
+			<div class="standing span1">
+				 {{forloop.counter}}
+			</div>
+			{% include "playerbox.html" %}
+		  </div>
 		  {% endfor %}
 		</div>
 	  </div>	  

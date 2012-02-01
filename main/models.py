@@ -17,6 +17,9 @@ class UserProfile(models.Model):
         losses = sum([team.losses.count() for team in teams])
         return (wins,losses)
 
+    def get_rating(self):
+        return sum([t.get_rating() for t in Team.get_teams_by_user(self)])
+
     def get_teams(self):
         return Team.get_teams_by_user(self.user)
         
@@ -37,6 +40,9 @@ class Team(models.Model):
                 'id':self.id,
                 'wins':self.wins.count(),
                 'losses':self.losses.count()}
+
+    def get_rating(self):
+        return self.wins.count()*1.5 - self.losses.count()
 
     def get_recent_history(self):
         return Outcome.get_team_history(self)[:10]

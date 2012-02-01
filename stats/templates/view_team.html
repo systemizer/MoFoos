@@ -11,8 +11,8 @@
 	{% else %}
 	<img class="span4" src="{{STATIC_URL}}images/filler.png" />
 	{% endif %}
-	<div class="span11 well">
-	  <h1>{{team.name}}</h1>
+	<div class="span11 team-header-info well">
+	  <h1>{{team.name}} <small>({{team.wins.count}} - {{team.losses.count}})</small></h1>
 	  <p class="teambio">
 		{% if team.bio %}
 		{{team.bio}}
@@ -25,7 +25,7 @@
 	<div class="span10">
 	  <h2>The Team</h2>
 	  <div class="players">
-		<div class="playerbox row">
+		<div class="teamplayer-box row">
 		  {% if team.player1.get_profile.image %}
 		  <img class="span2" src="{{team.player1.get_profile.image.url}}" />
 		  {% else %}
@@ -54,7 +54,7 @@
 			</ul>			
 		  </div>
 		</div>
-		<div class="playerbox row">
+		<div class="teamplayer-box row">
 		  {% if team.player2.get_profile.image %}
 		  <img class="span2" src="{{team.player2.get_profile.image.url}}" />
 		  {% else %}
