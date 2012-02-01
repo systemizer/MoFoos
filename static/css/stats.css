@@ -67,8 +67,8 @@ ul.recent-activity .activity:hover {background:#666;color:#111;}
 .teamplayer-box .info .name { font-size:25px;}
 .teamplayer-box .info .name small { font-size:14px;font-variant:small-caps}
 .teamplayer-box .info .bio {color:#AAA;font-style:italic;font-size:16px;margin-top:10px}		   
-.teamplayer-box .info ul.other-teams {list-style:none;margin-left:0;margin-top:10px;}
-.teamplayer-box .info ul.other-teams li {display:inline;}
+.teamplayer-box .info ul.other-teams {list-style:none;margin-left:0;margin-top:10px;margin-bottom:0px}
+.teamplayer-box .info ul.other-teams li {display:inline;line-height:30px;}
 .teamplayer-box .info ul.other-teams li a {background-color:#DDD;display:inline;padding:5px}
 
 
