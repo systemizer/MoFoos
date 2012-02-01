@@ -20,7 +20,7 @@ def index(request):
     teams = sorted(teams,key=lambda k: -(k.get_rating()))
 
     players = User.objects.all()
-    players = sorted(players,key= lambda p: (p.get_profile().get_rating()))
+    players = sorted(players,key= lambda p: (-p.get_profile().get_rating()))
 
     login_form = AuthenticationForm()
     return render_to_response("stats_index.html",{'updates':updates,
