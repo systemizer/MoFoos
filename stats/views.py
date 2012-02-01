@@ -15,7 +15,7 @@ from foos.main.models import Outcome, Team
 def index(request):
     updates = Update.objects.all().order_by("-created")[:20]
     teams = Team.objects.all()
-    teams = sorted(teams,key=lambda k: k.wins.count()*1.5 - k.losses.count())
+    teams = sorted(teams,key=lambda k: -(k.wins.count()*1.5 - k.losses.count()))
     login_form = AuthenticationForm()
     return render_to_response("stats_index.html",{'updates':updates,
                                                   'teams' : teams,
