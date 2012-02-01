@@ -25,6 +25,7 @@
 		  <img class="span2" src="{{team.player1.get_profile.image.url}}" />
 		  {% else %}
 		  <img class="span2" src="{{STATIC_URL}}images/filler.png" />
+		  {% endif %}
 		  <div class="info span6">
 			<div class="name">
 			  <a href="/stats/profile/?uid={{team.player1.id}}">{{team.player1.username}}</a>
@@ -47,13 +48,13 @@
 			  {% endif %}			
 			</ul>			
 		  </div>
-		  {% endif %}
 		</div>
 		<div class="playerbox row">
 		  {% if team.player2.get_profile.image %}
 		  <img class="span2" src="{{team.player2.get_profile.image.url}}" />
 		  {% else %}
 		  <img class="span2" src="{{STATIC_URL}}images/filler.png" />
+		  {% endif %}
 		  <div class="info span6">
 			<div class="name">
 			  <a href="/stats/profile/?uid={{team.player2.id}}">{{team.player2.username}}</a>
@@ -76,7 +77,6 @@
 			  {% endif %}			
 			</ul>			
 		  </div>
-		  {% endif %}
 		</div>
 	  </div>
 	</div>
