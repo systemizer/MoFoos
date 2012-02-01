@@ -1,0 +1,15 @@
+{% extends "stats_base.html" %}
+
+{% block content %}
+<form action="?tid={{tid}}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <table>
+	{{form.as_table}}
+	<tr>
+	  <td colspan="2">
+		<input type="submit" value="Edit Team" />
+	  </td>
+	</tr>
+  </table>
+</form>
+{% endblock %}

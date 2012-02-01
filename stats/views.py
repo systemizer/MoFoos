@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm
 
 from foos.main.decorators import login_required
+from foos.main.forms import EditTeamForm
 from foos.stats.forms import UserProfileForm
 from foos.stats.models import *
 from foos.main.models import Outcome, Team
@@ -93,12 +94,12 @@ def edit_team(request):
             return HttpResponseBadRequest("You cannot edit a team that you are not on")
         if request.method=="GET":
             form = EditTeamForm(instance=team)
-            return render_to_response("edit_team.html",{'form':form},RequestContext(request))
+            return render_to_response("edit_team.html",{'form':form,'tid':team.id},RequestContext(request))
         elif request.method=="POST":
             form = EditTeamForm(request.POST,request.FILES,instance=team)
             if form.is_valid():
                 form.save()
-            return render_to_response("edit_team.html",{'form':form},RequestContext(request))
+            return render_to_response("edit_team.html",{'form':form,'tid':team.id},RequestContext(request))
         else:
             raise Http404
     except ObjectDoesNotExist:

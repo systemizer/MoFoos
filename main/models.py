@@ -63,8 +63,10 @@ class Team(models.Model):
         return cls.objects.filter(Q(player1=user) | Q(player2=user))
 
     def save(self):
-        if Team.objects.filter(player1=self.player1,player2=self.player2).count() or Team.objects.filter(player1=self.player2,player2=self.player1).count():
-            raise ValidationError("Those players are already on a team")
+        #if team doesn't exist. do extra check
+        if not hasattr(self,"id"):            
+            if Team.objects.filter(player1=self.player1,player2=self.player2).count() or Team.objects.filter(player1=self.player2,player2=self.player1).count():
+                raise ValidationError("Those players are already on a team")
         if not self.is_valid:
             raise ValidationError("There is no 'i' in team. Find a teammate")
         return super(Team,self).save()
