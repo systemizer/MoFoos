@@ -74,8 +74,8 @@ class Team(models.Model):
             elapsed+=d
         time_elapsed = elapsed.seconds + elapsed.days*24*60*60
         
-        score_rate = time_elapsed/total_goals
-        scored_against_rate = time_elapsed/total_goals_against
+        score_rate = float(total_goals)/(time_elapsed/60)
+        scored_against_rate = float(total_goals_against)/(time_elapsed/60)
         score_per_game = total_goals/(wins+losses)
         scored_against_per_game = total_goals_against/(wins+losses)
         average_game_duration = time_elapsed/(wins+losses)
