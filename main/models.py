@@ -31,7 +31,7 @@ class UserProfile(models.Model):
         elapsed = timedelta()
         for d in durations:
             elapsed+=d
-        return elapsed.total_seconds()
+        return elapsed.seconds + elapsed.days*24*60*60
         
 class Team(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -72,7 +72,7 @@ class Team(models.Model):
         elapsed = timedelta()
         for d in durations:
             elapsed+=d
-        time_elapsed = elapsed.total_seconds()
+        time_elapsed = elapsed.seconds + elapsed.days*24*60*60
         
         score_rate = time_elapsed/total_goals
         scored_against_rate = time_elapsed/total_goals_against
