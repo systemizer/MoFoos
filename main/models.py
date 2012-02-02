@@ -31,7 +31,7 @@ class UserProfile(models.Model):
         elapsed = timedelta()
         for d in durations:
             elapsed+=d
-        return elapsed
+        return elapsed.total_seconds()
         
 class Team(models.Model):
     name = models.CharField(max_length=255,unique=True)

@@ -11,6 +11,7 @@
 	  {{player.username}}
 	  <small>Overall Record: {{player.get_profile.get_record|format_record}}</small>
 	</a>	
+	{{player.get_profile.get_total_playing_time|format_time}}
 	<ul class="teams span11">
 	  <li>Teams:</li>
 	  {% for team in player.get_profile.get_teams.all %}
