@@ -3,6 +3,8 @@ from django.contrib.auth.models import *
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 
+from datetime import datetime, timedelta
+
 from foos.stats.models import OutcomeUpdate, ScoreUpdate, Update
 
 class UserProfile(models.Model):
@@ -22,6 +24,14 @@ class UserProfile(models.Model):
 
     def get_teams(self):
         return Team.get_teams_by_user(self.user)
+
+    #returns the total number of seconds played
+    def get_total_playing_time(self):
+        durations = [g.get_duration() for g in Game.get_games_by_user(self.user) if g.is_done()]
+        elapsed = timedelta()
+        for d in durations:
+            elapsed+=d
+        return elapsed
         
 class Team(models.Model):
     name = models.CharField(max_length=255,unique=True)
@@ -70,7 +80,7 @@ class Team(models.Model):
 
     def save(self):
         #if team doesn't exist. do extra check
-        if not hasattr(self,"id"):            
+        if not self.id:            
             if Team.objects.filter(player1=self.player1,player2=self.player2).count() or Team.objects.filter(player1=self.player2,player2=self.player1).count():
                 raise ValidationError("Those players are already on a team")
         if not self.is_valid:
@@ -79,7 +89,7 @@ class Team(models.Model):
             
 class Game(models.Model):
     is_valid = models.BooleanField(default=False)
-    in_progress = models.BooleanField(default=True)
+    in_progress = models.BooleanField(default=False)
     team1 = models.ForeignKey(Team,related_name="games_team1")
     team2 = models.ForeignKey(Team,related_name="games_team2")
     team1_score = models.IntegerField(default=0)
@@ -92,14 +102,28 @@ class Game(models.Model):
     def __unicode__(self):
         return "%s vs %s" % (self.team1.name,self.team2.name)
 
+    def is_done(self):
+        return hasattr(self,"outcome")
+
+    def get_duration(self):
+        if hasattr(self,"outcome"):
+            return self.outcome.created - self.created
+        else:
+            return datetime.now() - self.created
+
     @classmethod
     def get_current_games_by_user(cls,user):
         player_teams = Team.get_teams_by_user(user)
-        return cls.objects.filter(in_progress=True).filter(Q(team1__in=player_teams) | Q(team2__in=player_teams))
+        return [g for g in cls.objects.filter(deleted=False).filter(Q(team1__in=player_teams) | Q(team2__in=player_teams)) if not g.is_done()]
 
     @classmethod
     def get_games_by_team(cls,team):
         return cls.objects.filter(Q(team1=team) | Q(team2=team))
+
+    @classmethod
+    def get_games_by_user(cls,user):
+        player_teams = Team.get_teams_by_user(user)
+        return cls.objects.filter(Q(team1__in = player_teams) | Q(team2__in = player_teams))
 
     def get_context_for_user(self,user):
         if not user:

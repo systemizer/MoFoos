@@ -140,7 +140,7 @@ def increment_score(request):
             return HttpResponseBadRequest("User is not currently playing")
 
         #check if the game is over
-        if game.team1_score==game.score_limit:
+        if game.team1_score>=game.score_limit:
             outcome = Outcome(game=game,
                               winner=game.team1,
                               loser=game.team2,
@@ -148,6 +148,7 @@ def increment_score(request):
                               loser_score=game.team2_score)
             outcome.save()
             game.in_progress = False
+            game.is_done = True
             game.save()
         elif game.team2_score==game.score_limit:
             outcome = Outcome(game=game,
@@ -157,6 +158,7 @@ def increment_score(request):
                               loser_score=game.team1_score)
             outcome.save()
             game.in_progress = False
+            game.is_done = True
             game.save()            
 
         return HttpResponse(json.dumps(game.get_context_for_user(request.user)))
@@ -216,6 +218,7 @@ def refresh_score(request):
         if not game.is_valid:
             if game.team2.is_player(request.user):
                 game.is_valid = True
+                game.in_progress=True
                 game.save()
 
         return HttpResponse(json.dumps(game.get_context_for_user(request.user)))
@@ -251,6 +254,8 @@ def login(request):
     else:
         raise Http404
 
+
+#This occurs only when the user deletes a currently playing game
 @login_required
 @ajax_required
 def end_game(request):
@@ -259,6 +264,7 @@ def end_game(request):
         try:
             game = Game.objects.get(id=gid)
             game.in_progress = False
+            game.deleted = True
             game.save()
             return HttpResponse("OK")
         except ObjectDoesNotExist:
