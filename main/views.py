@@ -57,10 +57,23 @@ def new_game(request):
                 team_against = Team.objects.get(id=against)
             else:
                 team_against = None
-            game = Game(team1=team,
-                        team2=team_against,
-                        score_limit=score_limit)
-            game.save()
+
+            #check if a duplicate game exists
+            possible_dups = Game.objects.filter(is_valid=False,
+                                   in_progress=True,
+                                   team1_score=0,
+                                   team2_score=0)
+            if possible_dups.filter(team1=team,team2=team_against).exists():
+                game = possible_dups.filter(team1=team,team2=team_against)[0]
+            elif possible_dups.filter(team1=team_against,team2=team).exists():
+                game = possible_dups.filter(team1=team_against,team2=team)[0]
+            else:
+                                   
+                game = Game(team1=team,
+                            team2=team_against,
+                            score_limit=score_limit)
+                game.save()
+
             game_context = game.get_context_for_user(request.user)
             return HttpResponse(json.dumps(game_context))
         except ObjectDoesNotExist:
