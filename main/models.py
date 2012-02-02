@@ -103,7 +103,7 @@ class Game(models.Model):
         return "%s vs %s" % (self.team1.name,self.team2.name)
 
     def is_done(self):
-        return hasattr(self,"outcome")
+        return hasattr(self,"outcome") and not self.deleted
 
     def get_duration(self):
         if hasattr(self,"outcome"):
