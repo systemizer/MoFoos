@@ -9,7 +9,7 @@
 	<div class="alert-message info">This is your profile. <a href="/stats/edit/profile/?tid={{user.id}}">Click here to edit</a></div>
 	{% endif %}
 	{% if profile.image %}
-	<img class="span4" src="{{profile.url}}" />
+	<img class="span4" src="{{profile.image.url}}" />
 	{% else %}
 	<img class="span4" src="{{STATIC_URL}}images/filler.png" />
 	{% endif %}
