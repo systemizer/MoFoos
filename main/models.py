@@ -22,8 +22,55 @@ class UserProfile(models.Model):
     def get_rating(self):
         return sum([t.get_rating() for t in Team.get_teams_by_user(self)])
 
+    def get_recent_history(self):
+        return Outcome.get_user_history(self)[:10]
+
+
     def get_teams(self):
         return Team.get_teams_by_user(self.user)
+
+    def get_stats(self):
+        player_teams = Team.get_teams_by_user(self.user)
+
+        total_duration = self.get_total_playing_time()
+        total_team_goals = sum([t.team_scores.all().count() for t in player_teams] )
+        total_team_goals_against = sum([t.team_scored_against.all().count() for t in player_teams])
+        
+        wins = sum([team.wins.count() for team in player_teams])
+        losses = sum([team.losses.count() for team in player_teams])
+
+
+        if total_team_goals_against:
+            score_ratio = float(total_team_goals)/total_team_goals_against
+        else:
+            score_ratio = 0
+
+        durations = [g.get_duration() for g in Game.get_games_by_team(self) if g.is_done()]
+        elapsed = timedelta()
+        for d in durations:
+            elapsed+=d
+        time_elapsed = elapsed.seconds + elapsed.days*24*60*60
+        if time_elapsed:
+            score_rate = float(total_team_goals)/(time_elapsed/60)
+            scored_against_rate = float(total_team_goals_against)/(time_elapsed/60)
+        else:
+            score_rate = 0
+            scored_against_rate = 0
+        
+        score_per_game = total_team_goals/(wins+losses)
+        scored_against_per_game = total_team_goals_against/(wins+losses)
+        average_game_duration = time_elapsed/(wins+losses)
+
+        return {'score_rate':score_rate,
+                'scored_against_rate':scored_against_rate,
+                'scores_per_game':score_per_game,
+                'scored_against_per_game':scored_against_per_game,
+                'average_game_duration':average_game_duration,
+                'score_ratio':score_ratio,
+                'wins':wins,
+                'losses':losses,
+                'total_games':wins+losses}
+
 
     #returns the total number of seconds played
     def get_total_playing_time(self):
@@ -73,9 +120,14 @@ class Team(models.Model):
         for d in durations:
             elapsed+=d
         time_elapsed = elapsed.seconds + elapsed.days*24*60*60
+
+        if time_elapsed:
+            score_rate = float(total_goals)/(time_elapsed/60)
+            scored_against_rate = float(total_goals_against)/(time_elapsed/60)
+        else:
+            score_rate = 0
+            scored_against_rate = 0
         
-        score_rate = float(total_goals)/(time_elapsed/60)
-        scored_against_rate = float(total_goals_against)/(time_elapsed/60)
         score_per_game = total_goals/(wins+losses)
         scored_against_per_game = total_goals_against/(wins+losses)
         average_game_duration = time_elapsed/(wins+losses)
@@ -213,6 +265,11 @@ class Outcome(models.Model):
     @classmethod
     def get_team_history(cls,team):
         return Outcome.objects.filter(Q(winner=team) | Q(loser=team)).order_by('-created')
+
+    @classmethod
+    def get_user_history(cls,user):
+        return Outcome.objects.filter(Q(winner__player1=user) | Q(loser__player1=user) | Q(winner__player2=user) | Q(loser__player2=user)).order_by('-created')
+
 
 class ScoreStats(models.Model):
     scoring_team = models.ForeignKey(Team,related_name="team_scores")

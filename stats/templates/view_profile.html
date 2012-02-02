@@ -1,0 +1,86 @@
+{% extends "stats_base.html" %}
+
+{% load formatters %}
+
+{% block content %}
+<div class="profile-container">
+  <div class="row span16">
+	{% if edit %}
+	<div class="alert-message info">This is your profile. <a href="/stats/edit/profile/?tid={{user.id}}">Click here to edit</a></div>
+	{% endif %}
+	{% if profile.image %}
+	<img class="span4" src="{{profile.url}}" />
+	{% else %}
+	<img class="span4" src="{{STATIC_URL}}images/filler.png" />
+	{% endif %}
+	<div class="span11 team-header-info well">
+	  <h1>{{user.username}} <small>({{profile.get_record|format_record}})</small></h1>
+	  <p class="teambio">
+		{% if profile.bio %}
+		{{profile.bio}}
+		{% else %}
+		this player has no bio
+		{% endif %}
+	</div>
+  </div>
+  <div class="row span16">
+	<div class="span10">
+	  <h2>Player Stats</h2>
+	  <div class="teamstats-box row">
+		<table class="zebra-striped">
+		  <tr>
+			<td>Score Rate:</td>
+			<td>{{stats.score_rate}} <small>scores per minute</small></td>
+		  </tr>
+		  <tr>
+			<td>Scored Against Rate:</td>
+			<td>{{stats.scored_against_rate}} <small>scores per minute</small></td>
+		  </tr>
+		  <tr>
+			<td>Average Team Scores Per Game:</td>
+			<td>{{stats.scores_per_game}}</td>
+		  </tr>
+		  <tr>
+			<td>Average Team Scored Against Per Game:</td>
+			<td>{{stats.scored_against_per_game}}</td>
+		  </tr>
+		  <tr>
+			<td>Average Game Duration:</td>
+			<td>{{stats.average_game_duration|format_game_duration}}</td>
+		  </tr>
+		  <tr>
+			<td>Score Ratio</td>
+			<td>{{stats.score_ratio}}</td>
+		  </tr>
+		  <tr>
+			<td>Total Games</td>
+			<td>{{stats.total_games}} <small>games</small></td>
+		  </tr>
+		</table>
+
+	  </div>
+	</div>
+	<div class="span5">
+	  <h2>Recent Activity</h2>
+	  <ul class="recent-activity well">
+		{% if not profile.get_recent_history %}
+		<li>			
+		  <div class="activity">
+			No recent history
+		  </div>
+		</li>
+		{% else %}
+		{% for outcome in profile.get_recent_history %}
+		<a href="/stats/view/outcome/?oid={{outcome.id}}">
+		  <li>			
+			<div class="activity">
+			  {{outcome.winner.name}} defeated {{outcome.loser.name}} {{outcome.winner_score}} - {{outcome.loser_score}}
+			</div>
+		  </li>
+		</a>
+		{% endfor %}
+		{% endif %}
+	  </ul>
+	</div>
+</div>
+{% endblock %}

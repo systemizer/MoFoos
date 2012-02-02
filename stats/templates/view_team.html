@@ -35,7 +35,7 @@
 		  {% endif %}
 		  <div class="info span6">
 			<div class="name">
-			  <a href="/stats/profile/?uid={{team.player1.id}}">{{team.player1.username}}</a>
+			  <a href="/stats/view/profile/?uid={{team.player1.id}}">{{team.player1.username}}</a>
 			  <small>Overall record: {{team.player1.get_profile.get_record}}</small>
 			</div>
 			<div class="bio">
@@ -64,7 +64,7 @@
 		  {% endif %}
 		  <div class="info span6">
 			<div class="name">
-			  <a href="/stats/profile/?uid={{team.player2.id}}">{{team.player2.username}}</a>
+			  <a href="/stats/view/profile/?uid={{team.player2.id}}">{{team.player2.username}}</a>
 			  <small>Overall record: {{team.player2.get_profile.get_record}}</small>
 			</div>
 			<div class="bio">

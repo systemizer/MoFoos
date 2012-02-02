@@ -42,23 +42,20 @@ def view_outcome(request):
 
 
 
-def profile(request):
+def edit_profile(request):
     uid = request.GET.get("uid")
     if not uid:
         raise Http404
     try:
         user = User.objects.get(id=uid)
+        if user != request.user:
+            return HttpResponseForbidden()
         profile = user.get_profile()
         if request.method=="GET":
-            if user == request.user:
-                form = UserProfileForm(instance=profile)
-                return render_to_response("edit_profile.html",{'form':form,
-                                                               'profile':profile},RequestContext(request))
-            else:
-                return render_to_response("profile.html",{'profile':profile},RequestContext(request))
+            form = UserProfileForm(instance=profile)
+            return render_to_response("edit_profile.html",{'form':form,
+                                                           'profile':profile},RequestContext(request))
         elif request.method=="POST":
-            if user != request.user:
-                return HttpResponseForbidden()
             form = UserProfileForm(request.POST,request.FILES,instance=profile)
             if form.is_valid():
                 form.save()
@@ -70,6 +67,29 @@ def profile(request):
     except ObjectDoesNotExist:
         return HttpResponseBadRequest("User does not exist")
         
+
+def view_profile(request):
+    uid = request.GET.get("uid")
+    if not uid:
+        return HttpResponseBadRequest("Could not find user")
+    try:
+        user = User.objects.get(id=uid)
+        if user==request.user:
+            edit = True
+        else:
+            edit = False
+
+        profile = user.get_profile()
+        stats = profile.get_stats()
+
+        return render_to_response("view_profile.html",{'user':user,
+                                                       'edit':edit,
+                                                       'profile':profile,
+                                                       'stats':stats},
+                                  RequestContext(request))
+
+    except ObjectDoesNotExist:
+        return HttpResponseBadRequest("Could not find user")
 
                 
 def view_team(request):
