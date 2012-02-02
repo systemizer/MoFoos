@@ -79,12 +79,13 @@ def view_team(request):
     else:
         try: 
             team = Team.objects.get(id=tid)
+            stats = team.get_stats()
             if team.is_player(request.user):
                 edit= True
             else:
                 edit = False
             
-            return render_to_response("view_team.html",{'team':team,'edit':edit},RequestContext(request))
+            return render_to_response("view_team.html",{'team':team,'edit':edit,'stats':stats},RequestContext(request))
         except ObjectDoesNotExist:
             return HttpResponseBadRequest("Could not find team")
 

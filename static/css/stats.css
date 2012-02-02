@@ -77,6 +77,7 @@ ul.recent-activity .activity:hover {background:#666;color:#111;}
 .playerbox ul.teams {list-style:none;position:relative;top:7px;margin:0px;padding:0px;left:10px;}
 .playerbox ul.teams li {display:inline; background-color:#EEE;padding:5px;}
 .playerbox {margin-left:40px; padding-left:40px; margin-top:20px; padding-top:10px;background:#DDD;}		   
-
 .team-header-info {min-height:180px;}
 .player-entry {border-bottom: solid thin #CCC;padding-bottom:10px;}
+
+.teamstats-box table td small {font-size:11px;color:#CCC;font-style:italic;}

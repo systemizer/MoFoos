@@ -1,5 +1,7 @@
 {% extends "stats_base.html" %}
 
+{% load formatters %}
+
 {% block content %}
 <div class="team-container">
   <div class="row span16">
@@ -84,6 +86,39 @@
 		  </div>
 		</div>
 	  </div>
+	  <h2>Team Stats</h2>
+	  <div class="teamstats-box row">
+		<table class="zebra-striped">
+		  <tr>
+			<td>Score Rate:</td>
+			<td>{{stats.score_rate}} <small>seconds per score</small></td>
+		  </tr>
+		  <tr>
+			<td>Scored Against Rate:</td>
+			<td>{{stats.scored_against_rate}} <small>seconds per score</small></td>
+		  </tr>
+		  <tr>
+			<td>Average Scores Per Game:</td>
+			<td>{{stats.scores_per_game}}</td>
+		  </tr>
+		  <tr>
+			<td>Average Scored Against Per Game:</td>
+			<td>{{stats.scored_against_per_game}}</td>
+		  </tr>
+		  <tr>
+			<td>Average Game Duration:</td>
+			<td>{{stats.average_game_duration|format_game_duration}}</td>
+		  </tr>
+		  <tr>
+			<td>Score Ratio</td>
+			<td>{{stats.score_ratio}}</td>
+		  </tr>
+		  <tr>
+			<td>Total Games</td>
+			<td>{{stats.total_games}} <small>games</small></td>
+		  </tr>
+		</table>
+	  </div>
 	</div>
 	<div class="span5">
 	  <h2>Recent Activity</h2>
@@ -107,5 +142,6 @@
 		{% endif %}
 	  </ul>
 	</div>
+	
 </div>
 {% endblock %}

@@ -54,6 +54,45 @@ class Team(models.Model):
     def get_rating(self):
         return self.wins.count()*1.5 - self.losses.count()
 
+    def get_stats(self):
+        wins = self.wins.count()
+        losses = self.losses.count()
+        total_goals = self.team_scores.all().count()
+        total_goals_against = self.team_scored_against.all().count()
+        all_games = Game.get_games_by_team(self)
+
+        if total_goals_against:
+            score_ratio = float(total_goals)/total_goals_against
+        else:
+            score_ratio = 0
+
+        
+
+        durations = [g.get_duration() for g in Game.get_games_by_team(self) if g.is_done()]
+        elapsed = timedelta()
+        for d in durations:
+            elapsed+=d
+        time_elapsed = elapsed.total_seconds()
+        
+        score_rate = time_elapsed/total_goals
+        scored_against_rate = time_elapsed/total_goals_against
+        score_per_game = total_goals/(wins+losses)
+        scored_against_per_game = total_goals_against/(wins+losses)
+        average_game_duration = time_elapsed/(wins+losses)
+
+        return {'score_rate':score_rate,
+                'scored_against_rate':scored_against_rate,
+                'scores_per_game':score_per_game,
+                'scored_against_per_game':scored_against_per_game,
+                'average_game_duration':average_game_duration,
+                'score_ratio':score_ratio,
+                'wins':wins,
+                'losses':losses,
+                'total_games':wins+losses}
+        
+
+
+
     def get_recent_history(self):
         return Outcome.get_team_history(self)[:10]
                 

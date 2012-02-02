@@ -7,11 +7,10 @@
 	{% else %}
 	<img class="update-img" src="{{STATIC_URL}}images/filler.png" />
 	{% endif %}
-	<a class="name span10" href="/profile/?uid={{player.id}}">
+	<a class="name span9" href="/profile/?uid={{player.id}}">
 	  {{player.username}}
 	  <small>Overall Record: {{player.get_profile.get_record|format_record}}</small>
 	</a>	
-	{{player.get_profile.get_total_playing_time|format_time}}
 	<ul class="teams span11">
 	  <li>Teams:</li>
 	  {% for team in player.get_profile.get_teams.all %}

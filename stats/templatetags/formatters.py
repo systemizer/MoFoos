@@ -20,5 +20,13 @@ def format_time(value):
     else:
         return "%s seconds" % (value)
 
+def format_game_duration(value):
+    if not value:
+        return 0
+    value = int(value)
+    return "%sm %ss" % (value/60,value%60)
+    
+
 register.filter('format_time',format_time)
 register.filter('format_record',format_record)
+register.filter('format_game_duration',format_game_duration)
