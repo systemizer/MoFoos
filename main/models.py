@@ -231,14 +231,16 @@ class Game(models.Model):
                     'opponents_team':self.team2.name,
                     'opponents_score':self.team2_score,
                     'gid':self.id,
-                    'is_valid':self.is_valid}            
+                    'is_valid':self.is_valid,
+                    'naked_lap_in_effect':self.naked_lap_in_effect.name if self.naked_lap_in_effect else ""}            
         elif self.team2.is_player(user):
             return {'players_team':self.team2.name,
                     'players_score':self.team2_score,
                     'opponents_team':self.team1.name,
                     'opponents_score':self.team1_score,
                     'gid':self.id,
-                    'is_valid':self.is_valid}         
+                    'is_valid':self.is_valid,
+                    'naked_lap_in_effect':self.naked_lap_in_effect.name if self.naked_lap_in_effect else ""}            
         else:
             return {}
 
