@@ -181,6 +181,8 @@ class Team(models.Model):
 class Game(models.Model):
     is_valid = models.BooleanField(default=False)
     in_progress = models.BooleanField(default=False)
+    naked_lap_in_effect = models.ForeignKey(Team,null=True,blank=True,default=None)
+
     team1 = models.ForeignKey(Team,related_name="games_team1")
     team2 = models.ForeignKey(Team,related_name="games_team2")
     team1_score = models.IntegerField(default=0)
