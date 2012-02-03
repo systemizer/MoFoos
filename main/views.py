@@ -116,6 +116,12 @@ def increment_score(request):
         user_teams = Team.get_teams_by_user(request.user)
 
         if game.team1 in user_teams:
+
+            if game.team1_score==0:
+                game.naked_lap_in_effect = game.team2
+            elif game.naked_lap_in_effect==game.team1:
+                game.naked_lap_in_effect = None
+
             game.team1_score += 1                
             game.save()
             ScoreStats(scoring_team=game.team1,
@@ -127,6 +133,12 @@ def increment_score(request):
 
 
         elif game.team2 in user_teams:
+
+            if game.team2_score==0:
+                game.naked_lap_in_effect = game.team1
+            elif game.naked_lap_in_effect==game.team2:
+                game.naked_lap_in_effect = None
+
             game.team2_score +=1
             game.save()
             ScoreStats(scoring_team=game.team2,
@@ -148,9 +160,8 @@ def increment_score(request):
                               loser_score=game.team2_score)
             outcome.save()
             game.in_progress = False
-            game.is_done = True
             game.save()
-        elif game.team2_score==game.score_limit:
+        elif game.team2_score>=game.score_limit:
             outcome = Outcome(game=game,
                               winner=game.team2,
                               loser=game.team1,
@@ -160,6 +171,14 @@ def increment_score(request):
             game.in_progress = False
             game.is_done = True
             game.save()            
+
+        #check for naked lap
+        if game.team2_score>=game.score_limit or game.team1_score>=game.score_limit:
+            if game.naked_lap_in_effect:
+                nakedlap = NakedLap(team=game.naked_lap_in_effect,
+                                    game=game,
+                                    is_reversed = True if game.team1_score and game.team2_score else False )
+                nakedlap.save()
 
         return HttpResponse(json.dumps(game.get_context_for_user(request.user)))
 
@@ -263,9 +282,13 @@ def end_game(request):
     if gid:
         try:
             game = Game.objects.get(id=gid)
-            game.in_progress = False
-            game.deleted = True
-            game.save()
+            if game.is_done():
+                #dont delete the game
+                pass
+            else:
+                game.in_progress = False
+                game.deleted = True
+                game.save()
             return HttpResponse("OK")
         except ObjectDoesNotExist:
             return HttpResponseBadRequest("Could not find game")
