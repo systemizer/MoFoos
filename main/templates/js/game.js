@@ -4,7 +4,6 @@
        $('span.opponents_team').text(data['opponents_team']);
        $('span.opponents_score').text(data['opponents_score']);
 	   $('#current_game').attr("gid",data['gid']);	
-		t = data;
 	   if (!data['is_valid']) {
 		   $('#game-not-valid').css('display','block')		
 	   } else {
@@ -17,6 +16,19 @@
 	       $("#winner").text(data['opponents_team']);
            lose();
        }
+
+		/*naked lap logic*/ 
+		if (data['players_team']==data['naked_lap_in_effect']) {
+			$('#player-warning').css("display","block")
+			$('#opponent-warning').css("display","none")
+		} else if (data['opponents_team']==data['naked_lap_in_effect']) {
+			$('#player-warning').css("display","none")
+			$('#opponent-warning').css("display","block") 
+		} else {
+			$('#player-warning').css("display","none")
+			$('#opponent-warning').css("display","none") 
+		}
+
     }
   
    function win() {

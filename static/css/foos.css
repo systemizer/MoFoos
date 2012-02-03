@@ -19,3 +19,7 @@ a.hidden, a.hidden.ui-btn {display:none;}
 				border-radius: 10px;					
 				z-index:3;
 }
+
+.nakedlap-warning {font-style:italic;font-weight:normal;display:none;}
+.#player-warning {color:#C55;}
+#opponent-warning {color:#5C5;}
