@@ -6,8 +6,8 @@
 	<img class="update-img" src="{{STATIC_URL}}images/filler.png" />
 	{% endif %}
 	<a href="/stats/view/team/?tid={{team.id}}">
-	  <div class="span9 update-text">
-		{{team.name}}  ({{team.player1.username}} , {{team.player2.username}}) |<small>Overall Record ({{team.wins.count}}-{{team.losses.count}}) | Rating: {{team.rating}}</small>
+	  <div class="span10 update-text">
+		{{team.name}}  ({{team.player1.username}} , {{team.player2.username}}) <small>Overall Record ({{team.wins.count}}-{{team.losses.count}})</small>
 	  </div>
 	</a>
 	<p style="clear:both"></p>	  

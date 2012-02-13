@@ -45,11 +45,15 @@ class UserProfile(models.Model):
         else:
             score_ratio = 0
 
-        durations = [g.get_duration() for g in Game.get_games_by_team(self) if g.is_done()]
-        elapsed = timedelta()
-        for d in durations:
-            elapsed+=d
-        time_elapsed = elapsed.seconds + elapsed.days*24*60*60
+        time_elapsed = 0
+
+        for team in player_teams:
+            durations = [g.get_duration() for g in Game.get_games_by_team(team) if g.is_done()]
+            elapsed = timedelta()
+            for d in durations:
+                elapsed+=d
+            time_elapsed += elapsed.seconds + elapsed.days*24*60*60
+        time_elapsed = float(time_elapsed)
         if time_elapsed:
             score_rate = float(total_team_goals)/(time_elapsed/60)
             scored_against_rate = float(total_team_goals_against)/(time_elapsed/60)
@@ -57,9 +61,9 @@ class UserProfile(models.Model):
             score_rate = 0
             scored_against_rate = 0
         
-        score_per_game = total_team_goals/(wins+losses)
-        scored_against_per_game = total_team_goals_against/(wins+losses)
-        average_game_duration = time_elapsed/(wins+losses)
+        score_per_game = float(total_team_goals)/(wins+losses)
+        scored_against_per_game = float(total_team_goals_against)/(wins+losses)
+        average_game_duration = float(time_elapsed)/(wins+losses)
 
         return {'score_rate':score_rate,
                 'scored_against_rate':scored_against_rate,
