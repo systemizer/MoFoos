@@ -61,9 +61,15 @@ class UserProfile(models.Model):
             score_rate = 0
             scored_against_rate = 0
         
-        score_per_game = float(total_team_goals)/(wins+losses)
-        scored_against_per_game = float(total_team_goals_against)/(wins+losses)
-        average_game_duration = float(time_elapsed)/(wins+losses)
+        total_games = wins+losses
+        if total_games:
+            score_per_game = float(total_team_goals)/(wins+losses)
+            scored_against_per_game = float(total_team_goals_against)/(wins+losses)
+            average_game_duration = float(time_elapsed)/(wins+losses)
+        else:
+            score_per_game = 0
+            scored_against_per_game = 0
+            average_game_duration = 0
 
         return {'score_rate':score_rate,
                 'scored_against_rate':scored_against_rate,
