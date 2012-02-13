@@ -6,6 +6,7 @@ urlpatterns = patterns('foos.stats.views',
                        url(r'^view/profile/','view_profile'),
                        url(r'^edit/team/','edit_team'),
                        url(r'^edit/profile/','edit_profile'),
+                       url(r'^comment/','comment'),
 
                        url(r'^$','index'))
 

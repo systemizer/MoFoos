@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 
 from django.contrib.auth.forms import AuthenticationForm
 
-from foos.main.decorators import login_required
+from foos.main.decorators import login_required, ajax_required
 from foos.main.forms import EditTeamForm
-from foos.stats.forms import UserProfileForm
+from foos.stats.forms import UserProfileForm,CommentForm
 from foos.stats.models import *
 from foos.main.models import Outcome, Team
 
@@ -17,16 +17,18 @@ def index(request):
     updates = Update.objects.all().order_by("-created")[:20]
 
     teams = Team.objects.all()
-    teams = sorted(teams,key=lambda k: -(k.get_rating()))
+    teams = sorted(teams,key=lambda k: -k.rating)
 
     players = User.objects.all()
     players = sorted(players,key= lambda p: (-p.get_profile().get_rating()))
 
     login_form = AuthenticationForm()
+    comment_form = CommentForm()
     return render_to_response("stats_index.html",{'updates':updates,
                                                   'players':players,
                                                   'teams' : teams,
-                                                  'login_form':login_form},
+                                                  'login_form':login_form,
+                                                  'comment_form':comment_form},
                               RequestContext(request))
                               
 
@@ -132,4 +134,23 @@ def edit_team(request):
     except ObjectDoesNotExist:
         return HttpResponseBadRequest("Could not find team")
 
-            
+@ajax_required
+@login_required            
+def comment(request):
+    uid = request.GET.get("uid")
+    if not uid:
+        return HttpResponseBadRequest("Could not determine update")
+    try:
+        update = Update.objects.get(id=uid)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.update = update
+            comment.save()
+            return HttpResponse("OK")
+        else:
+            return HttpResponseBadRequest("Failed to save comment")
+        
+    except ObjectDoesNotExist:
+        return HttpResponseBadRequest("Could not determine update")

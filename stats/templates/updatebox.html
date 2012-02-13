@@ -17,9 +17,40 @@
 	  <ul class="nav" id="update-nav">
 		<li><a href="">Upvote</a></li>
 		<li><a href="">Downvote</a></li>
-		<li><a href="">Comment</a></li>
+		<li><a class="comment-button" id="comment-{{update.id}}" href="#">Comment {% if update.comments.count %}({{update.comments.count}}){% endif %}</a></li>
 		<li><span class="update-time">{{update.created|ago}}<span></li>
 	  </ul>
 	  <p style="clear:both"></p>	  
+	  <div class="commentbox" id="commentbox-{{update.id}}">
+		{% if update.comments.all %}
+		{% for comment in update.comments.all %}
+		<hr />
+		<div class="comment row">
+		  {% if comment.user.get_profile.image %}
+		  <img class="span1" src="{{comment.user.get_profile.image.url}}" />
+		  {% else %}
+		  <img class="span1" src="{{STATIC_URL}}images/filler.png" />
+		  {% endif %}
+		  <div class="span10">
+			<b>{{comment.user.username}}</b><br />
+			{{comment.text}}
+			<br />
+			<i>{{comment.created|ago}}</i>
+		  </div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<div class="no-comments">No comments</div>
+		{% endif %}
+		{% if user.is_authenticated %}
+		<form class="span12" action="/stats/comment/?uid={{update.id}}" method="POST">
+		  {% csrf_token %}
+		  {% for field in comment_form %}
+		  {{field}}
+		  {% endfor %}
+		  <input class="span3" type="submit" value="Comment"></input>
+		</form>
+		{% endif %}
+	  </div>
   </div>
 </div>
