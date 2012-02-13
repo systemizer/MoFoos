@@ -152,6 +152,8 @@ def increment_score(request):
             return HttpResponseBadRequest("User is not currently playing")
 
         #check if the game is over
+        outcome = None 
+
         if game.team1_score>=game.score_limit:
             outcome = Outcome(game=game,
                               winner=game.team1,
@@ -161,6 +163,7 @@ def increment_score(request):
             outcome.save()
             game.in_progress = False
             game.save()
+
         elif game.team2_score>=game.score_limit:
             outcome = Outcome(game=game,
                               winner=game.team2,
@@ -170,7 +173,11 @@ def increment_score(request):
             outcome.save()
             game.in_progress = False
             game.is_done = True
-            game.save()            
+            game.save()
+
+        if outcome:
+            outcome.update_rating()
+
 
         #check for naked lap
         if game.team2_score>=game.score_limit or game.team1_score>=game.score_limit:

@@ -81,3 +81,22 @@ ul.recent-activity .activity:hover {background:#666;color:#111;}
 .player-entry {border-bottom: solid thin #CCC;padding-bottom:10px;}
 
 .teamstats-box table td small {font-size:11px;color:#CCC;font-style:italic;}
+
+#outcome-header .loser-box {text-align:right;}
+#outcome-header .winner-box {text-align:left;}
+.outcome-detail {min-height:180px;}
+.outcome-detail #winner {text-align:left;}
+.outcome-detail #vs {text-align:center;font-size:100px;line-height:100px;position:relative;bottom:15px;}
+.outcome-detail #loser {text-align:right;}
+.outcome-detail .teamname {font-size:35px;line-height:35px;}
+.outcome-teambox .outcome {font-size:75px;font-variant:small-caps;margin-top:15px;position:relative;right:5px;}
+.outcome-teambox .outcome.winner {text-align:left}
+.outcome-teambox outcome.loser {text-align:right}
+
+/* comment box */
+.commentbox {display:none;}
+.commentbox form {margin-top:20px;}
+.commentbox input {height:45px;font-size:16px;position:relative;left:25px;}
+.commentbox .comment {position:relative;left:40px;margin-top:5px;margin-bottom:5px;}
+.commentbox hr {margin-top:5px;margin-bottom:5px;border:solid thin #CCC;}
+.commentbox .no-comments {text-align:center; color:#666; font-style:italic; padding:5px;}

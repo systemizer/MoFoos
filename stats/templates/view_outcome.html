@@ -2,5 +2,33 @@
 
 
 {% block content %}
-Testing 
+<div class="outcome-container">
+  <div class="row span16" id="outcome-header">
+	<div class="span4 outcome-teambox">
+	  {% if outcome.winner.image %}
+	  <img class="span4" src="{{outcome.winner.image.url}}" />
+	  {% else %}
+	  <img class="span4" src="{{STATIC_URL}}images/filler.png" />
+	  {% endif %}
+	  <h1 class="outcome winner">Winner</h1>
+	</div>
+	<div class="span7 well outcome-detail">	  
+	  <div class="teamname" id="winner">{{outcome.winner.name}}</div>
+	  <div id="vs">vs</div>
+	  <div class="teamname" id="loser">{{outcome.loser.name}}</div>
+	</div>
+	<div class="span4 outcome-teambox">
+	  {% if outcome.loser.image %}
+	  <img class="span4" src="{{outcome.loser.image.url}}" />
+	  {% else %}
+	  <img class="span4" src="{{STATIC_URL}}images/filler.png" />
+	  {% endif %}
+	  <h1 class="outcome loser">Loser</h1>
+	</div>
+  </div>
+  <div class="row span16" id="outcome-content">
+	conten goes here
+  </div>
+</div>
+
 {% endblock %}

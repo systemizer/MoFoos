@@ -20,7 +20,7 @@ class UserProfile(models.Model):
         return (wins,losses)
 
     def get_rating(self):
-        return sum([t.get_rating() for t in Team.get_teams_by_user(self)])
+        return sum([t.rating*Game.get_games_by_team(t).count() for t in Team.get_teams_by_user(self)])/Game.get_games_by_user(self.user).count()
 
     def get_recent_history(self):
         return Outcome.get_user_history(self)[:10]
@@ -96,6 +96,7 @@ class Team(models.Model):
     image = models.ImageField(upload_to="%m/%y/%d/",null=True,blank=True)
     player1 = models.ForeignKey(User,related_name="teams_player1")
     player2 = models.ForeignKey(User,blank=True,null=True,related_name="teams_player2")
+    rating = models.IntegerField(default=1400)
     deleted = models.BooleanField(default=False)
 
 
@@ -258,6 +259,30 @@ class Outcome(models.Model):
     loser_score = models.IntegerField()
     deleted = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+    rating_applied = models.BooleanField(default=False)
+
+    def update_rating(self):
+        if self.rating_applied:
+            return #only apply once
+ 
+        winner_expected_score = 1/(1+10**((self.loser.rating-self.winner.rating)/float(400)))
+        loser_expected_score = 1/(1+10**((self.winner.rating-self.loser.rating)/float(400)))
+        avg_rating = (self.winner.rating+self.loser.rating)/2.0
+        if avg_rating < 2100:
+            k = 32
+        elif avg_rating >= 2100 and avg_rating < 2400:
+            k=24
+        else:
+            k = 16
+
+        self.winner.rating = self.winner.rating + k*(1-winner_expected_score)
+        self.loser.rating = self.loser.rating + k*(0-loser_expected_score)
+        self.winner.save()
+        self.loser.save()
+        self.rating_applied = True
+        self.save()
+
+    
 
     def __unicode__(self):
         return "%s-%s vs %s-%s" % (self.winner.name,
