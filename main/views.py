@@ -23,7 +23,7 @@ def index(request):
         players = []
         current_games = []
         
-    opponent_teams = [t for t in Team.objects.all() if t not in player_teams]
+    opponent_teams = [t for t in Team.objects.all().order_by("name") if t not in player_teams]
     opponent_teams_context = [(t.name,t.player1,t.player2,t.id) for t in opponent_teams]
 
     register_form = UserCreationForm()
